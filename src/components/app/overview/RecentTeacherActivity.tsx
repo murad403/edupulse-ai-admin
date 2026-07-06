@@ -56,7 +56,7 @@ const RecentTeacherActivity = () => {
       
       {/* Table Area */}
       <div className="flex-1 overflow-x-auto">
-        <table className="w-full text-left border-collapse">
+        <table className="w-full min-w-[500px] text-left border-collapse">
           <thead>
             <tr className="border-b border-gray-50 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
               <th className="pb-3 font-extrabold">Name</th>

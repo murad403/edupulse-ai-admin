@@ -16,15 +16,17 @@ import {
   Settings,
   ChevronLeft,
   ChevronRight,
-  LogOut
+  X
 } from 'lucide-react'
 
 interface AdminSidebarProps {
   isCollapsed: boolean
   setIsCollapsed: (collapsed: boolean) => void
+  isMobileOpen: boolean
+  setIsMobileOpen: (open: boolean) => void
 }
 
-const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
+const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }: AdminSidebarProps) => {
   const pathname = usePathname()
 
   const navItems = [
@@ -42,8 +44,13 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
   return (
     <aside 
       className={cn(
-        "fixed inset-y-0 left-0 z-30 flex flex-col border-r border-gray-100 bg-white transition-all duration-300 shadow-sm",
-        isCollapsed ? "w-[72px]" : "w-[260px]"
+        "flex flex-col border-r border-gray-100 bg-white transition-all duration-300 shadow-sm z-50",
+        // Desktop positioning & width
+        "lg:fixed lg:inset-y-0 lg:left-0 lg:h-screen lg:z-30",
+        isCollapsed ? "lg:w-[72px]" : "lg:w-[260px]",
+        // Mobile positioning & width
+        "max-lg:fixed max-lg:inset-y-0 max-lg:left-0 max-lg:w-[260px] max-lg:z-50",
+        isMobileOpen ? "max-lg:translate-x-0" : "max-lg:-translate-x-full"
       )}
     >
       {/* Brand Header */}
@@ -64,15 +71,20 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
               <circle cx="12" cy="12" r="2.5" fill="currentColor" />
             </svg>
           </div>
-          {!isCollapsed && (
-            <div className="flex flex-col tracking-tight transition-opacity duration-300">
-              <span className="font-bold text-title text-base leading-tight">
-                Teachers<span className="text-main">ai</span>pet
-              </span>
-              <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Admin Suite</span>
-            </div>
-          )}
+          <div className={cn("flex flex-col tracking-tight transition-all duration-300", isCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100")}>
+            <span className="font-bold text-title text-base leading-tight whitespace-nowrap">
+              Teachers<span className="text-main">ai</span>pet
+            </span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none whitespace-nowrap">Admin Suite</span>
+          </div>
         </div>
+        {/* Mobile close button */}
+        <button 
+          onClick={() => setIsMobileOpen(false)}
+          className="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
+        >
+          <X className="h-5 w-5" />
+        </button>
       </div>
 
       {/* Navigation Items */}
@@ -104,13 +116,13 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
                 )} 
               />
               
-              {!isCollapsed && (
-                <span className="transition-opacity duration-300">{item.name}</span>
-              )}
+              <span className={cn("transition-all duration-300", isCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100")}>
+                {item.name}
+              </span>
 
-              {/* Tooltip when collapsed */}
+              {/* Tooltip when collapsed (Desktop only) */}
               {isCollapsed && (
-                <div className="absolute left-14 rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap shadow-md">
+                <div className="max-lg:hidden absolute left-14 rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap shadow-md">
                   {item.name}
                 </div>
               )}
@@ -128,17 +140,15 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
               alt="Alex Mercer"
               className="h-9 w-9 shrink-0 rounded-full border border-gray-200 object-cover"
             />
-            {!isCollapsed && (
-              <div className="flex flex-col overflow-hidden text-left">
-                <span className="text-xs font-bold text-gray-800 truncate leading-tight">Alex Mercer</span>
-                <span className="text-[10px] text-gray-500 truncate leading-none">Super Administrator</span>
-              </div>
-            )}
+            <div className={cn("flex flex-col overflow-hidden text-left transition-all duration-300", isCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100")}>
+              <span className="text-xs font-bold text-gray-800 truncate leading-tight whitespace-nowrap">Alex Mercer</span>
+              <span className="text-[10px] text-gray-500 truncate leading-none whitespace-nowrap">Super Administrator</span>
+            </div>
           </div>
           
           <button 
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
+            className="max-lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           >
             {isCollapsed ? (
