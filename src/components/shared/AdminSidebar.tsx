@@ -33,7 +33,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
     { name: 'Overview', href: '/', icon: LayoutDashboard },
     { name: 'User Management', href: '/user-management', icon: Users },
     { name: 'Schools & Classes', href: '/schools-&-classes', icon: School },
-    { name: 'Standards Mapping', href: '/standards', icon: Compass },
+    { name: 'Standards Mapping', href: '/standards-mapping', icon: Compass },
     { name: 'AI Configuration', href: '/ai-config', icon: Sliders },
     { name: 'Reports', href: '/reports', icon: FileBarChart },
     { name: 'Content Templates', href: '/content-templates', icon: LayoutGrid },
