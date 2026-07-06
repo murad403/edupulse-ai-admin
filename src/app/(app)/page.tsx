@@ -1,8 +1,11 @@
+import OverviewPage from '@/components/app/overview/OverviewPage'
 import React from 'react'
 
 const page = () => {
   return (
-    <div>page</div>
+    <div>
+      <OverviewPage/>
+    </div>
   )
 }
 
