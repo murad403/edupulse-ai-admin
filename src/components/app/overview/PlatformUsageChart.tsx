@@ -88,7 +88,7 @@ const PlatformUsageChart = () => {
       {/* Chart Footer Info */}
       <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-50 pt-4 mt-2 text-xs">
         <div className="flex items-center gap-2 text-gray-500 font-semibold mb-2 sm:mb-0">
-          <span className="h-2.5 w-2.5 rounded-full bg-brand" />
+          <span className="h-2.5 w-2.5 rounded-full bg-main" />
           <span>Daily API Cognitive Requests</span>
         </div>
         <div className="text-gray-400 font-medium">

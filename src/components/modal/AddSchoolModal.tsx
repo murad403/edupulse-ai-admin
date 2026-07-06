@@ -1,6 +1,4 @@
 'use client'
-
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -12,8 +10,8 @@ import { Label } from '@/components/ui/label'
 const schema = z.object({
   schoolName: z.string().min(2, { message: 'School name must be at least 2 characters.' }),
   region: z.string().min(2, { message: 'Region / District Office is required.' }),
-  teachersCount: z.coerce.number({ invalid_type_error: 'Please enter a number.' }).int().min(0, { message: 'Must be a positive integer.' }),
-  studentsCount: z.coerce.number({ invalid_type_error: 'Please enter a number.' }).int().min(0, { message: 'Must be a positive integer.' }),
+  teachersCount: z.coerce.number({ error: 'Please enter a number.' }).int().min(0, { message: 'Must be a positive integer.' }),
+  studentsCount: z.coerce.number({ error: 'Please enter a number.' }).int().min(0, { message: 'Must be a positive integer.' }),
   status: z.enum(['ACTIVE', 'INACTIVE'])
 })
 
@@ -25,15 +23,8 @@ interface AddSchoolModalProps {
 }
 
 const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
-  const { 
-    register, 
-    handleSubmit, 
-    setValue, 
-    watch,
-    reset,
-    formState: { errors, isSubmitting } 
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  const { register, handleSubmit, setValue, watch, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
+    resolver: zodResolver(schema) as any,
     defaultValues: {
       schoolName: '',
       region: '',
@@ -57,12 +48,12 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity duration-200">
-      <div 
+      <div
         className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl border border-gray-100 relative animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
-        <button 
+        <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
         >
@@ -74,12 +65,12 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
 
         {/* Modal Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
+
           {/* School Name */}
           <div className="flex flex-col">
             <Label htmlFor="schoolName">School Name</Label>
-            <Input 
-              id="schoolName" 
+            <Input
+              id="schoolName"
               placeholder="e.g. Crescent Valley Prep"
               {...register('schoolName')}
             />
@@ -91,8 +82,8 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
           {/* Region / District Office */}
           <div className="flex flex-col">
             <Label htmlFor="region">Region / District Office</Label>
-            <Input 
-              id="region" 
+            <Input
+              id="region"
               placeholder="e.g. Northeast Regional District"
               {...register('region')}
             />
@@ -105,8 +96,8 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col">
               <Label htmlFor="teachersCount">Teachers Count</Label>
-              <Input 
-                id="teachersCount" 
+              <Input
+                id="teachersCount"
                 type="number"
                 placeholder="15"
                 {...register('teachersCount')}
@@ -118,8 +109,8 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
 
             <div className="flex flex-col">
               <Label htmlFor="studentsCount">Students Count</Label>
-              <Input 
-                id="studentsCount" 
+              <Input
+                id="studentsCount"
                 type="number"
                 placeholder="250"
                 {...register('studentsCount')}
@@ -137,22 +128,20 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
               <button
                 type="button"
                 onClick={() => setValue('status', 'ACTIVE')}
-                className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${
-                  currentStatus === 'ACTIVE' 
-                    ? 'border-brand text-title font-extrabold' 
+                className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${currentStatus === 'ACTIVE'
+                    ? 'border-main text-title font-extrabold'
                     : 'border-transparent text-gray-400 hover:text-gray-600'
-                }`}
+                  }`}
               >
                 Active
               </button>
               <button
                 type="button"
                 onClick={() => setValue('status', 'INACTIVE')}
-                className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${
-                  currentStatus === 'INACTIVE' 
-                    ? 'border-brand text-title font-extrabold' 
+                className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${currentStatus === 'INACTIVE'
+                    ? 'border-main text-title font-extrabold'
                     : 'border-transparent text-gray-400 hover:text-gray-600'
-                }`}
+                  }`}
               >
                 Inactive
               </button>
@@ -161,18 +150,18 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
 
           {/* Actions Buttons */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-50 mt-6">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={onClose}
               className="h-10 px-5 text-xs font-bold cursor-pointer"
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isSubmitting}
-              className="h-10 px-5 text-xs font-bold bg-brand hover:bg-brand-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
+              className="h-10 px-5 text-xs font-bold bg-main hover:bg-main-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
             >
               {isSubmitting ? 'Registering...' : 'Register School'}
             </Button>

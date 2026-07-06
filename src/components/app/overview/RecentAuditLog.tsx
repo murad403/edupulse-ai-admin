@@ -25,7 +25,7 @@ const RecentAuditLog = () => {
             <div key={index} className="flex gap-3 items-start">
               {/* Timeline Orange Dot */}
               <div className="mt-1.5 shrink-0 flex items-center justify-center">
-                <span className="h-1.5 w-1.5 rounded-full bg-brand ring-[3px] ring-orange-100" />
+                <span className="h-1.5 w-1.5 rounded-full bg-main ring-[3px] ring-orange-100" />
               </div>
               
               <div className="flex flex-col gap-0.5">

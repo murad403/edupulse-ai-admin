@@ -10,7 +10,7 @@ const OverviewStats = () => {
       title: 'Total Teachers',
       value: '142',
       icon: Users,
-      iconColor: 'text-brand',
+      iconColor: 'text-main',
       iconBg: 'bg-orange-50',
       valueColor: 'text-title'
     },
@@ -18,7 +18,7 @@ const OverviewStats = () => {
       title: 'Active Schools',
       value: '11',
       icon: School,
-      iconColor: 'text-brand',
+      iconColor: 'text-main',
       iconBg: 'bg-orange-50',
       valueColor: 'text-title'
     },
@@ -26,7 +26,7 @@ const OverviewStats = () => {
       title: 'AI Requests Today',
       value: '3,840',
       icon: Zap,
-      iconColor: 'text-brand',
+      iconColor: 'text-main',
       iconBg: 'bg-orange-50',
       valueColor: 'text-title'
     },

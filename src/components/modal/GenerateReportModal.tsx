@@ -120,7 +120,7 @@ const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              className="h-10 px-5 text-xs font-bold bg-brand hover:bg-brand-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
+              className="h-10 px-5 text-xs font-bold bg-main hover:bg-main-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
             >
               {isSubmitting ? 'Compiling...' : 'Compile Report'}
             </Button>

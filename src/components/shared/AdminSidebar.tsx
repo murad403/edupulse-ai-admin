@@ -49,7 +49,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
       {/* Brand Header */}
       <div className="flex h-16 items-center px-4 border-b border-gray-50 justify-between">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-brand shadow-sm shadow-orange-500/10">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-main shadow-sm shadow-orange-500/10">
             {/* Orange Brand Icon */}
             <svg 
               className="h-6 w-6" 
@@ -65,7 +65,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
           </div>
           {!isCollapsed && (
             <div className="flex flex-col tracking-tight transition-opacity duration-300">
-              <span className="font-bold text-title text-base leading-tight">EduPulse <span className="text-brand">AI</span></span>
+              <span className="font-bold text-title text-base leading-tight">EduPulse <span className="text-main">AI</span></span>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Admin Suite</span>
             </div>
           )}
@@ -85,19 +85,19 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all relative overflow-hidden",
                 isActive 
-                  ? "text-brand bg-orange-50/50" 
+                  ? "text-main bg-orange-50/50" 
                   : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
               )}
             >
               {/* Left active border indicator */}
               {isActive && (
-                <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-brand rounded-r-md" />
+                <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-main rounded-r-md" />
               )}
               
               <item.icon 
                 className={cn(
                   "h-5 w-5 shrink-0 transition-colors",
-                  isActive ? "text-brand" : "text-gray-400 group-hover:text-gray-600"
+                  isActive ? "text-main" : "text-gray-400 group-hover:text-gray-600"
                 )} 
               />
               

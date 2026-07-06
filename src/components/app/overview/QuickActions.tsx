@@ -19,25 +19,25 @@ const QuickActions = ({ onAddTeacher, onAddSchool, onGenerateReport }: QuickActi
         <Button 
           onClick={onAddTeacher}
           variant="default"
-          className="w-full h-11 justify-center gap-2 bg-brand hover:bg-brand-dark cursor-pointer text-sm font-bold shadow-md shadow-orange-500/10 active:scale-[0.98] transition-transform duration-100"
+          className="w-full h-11 justify-center gap-2 bg-main hover:bg-main-dark cursor-pointer text-sm font-bold shadow-md shadow-orange-500/10 active:scale-[0.98] transition-transform duration-100"
         >
-          <Plus className="h-4 w-4 stroke-[3]" />
+          <Plus className="h-4 w-4 stroke-3" />
           <span>Add Teacher</span>
         </Button>
         
         <Button 
           onClick={onAddSchool}
           variant="default"
-          className="w-full h-11 justify-center gap-2 bg-brand hover:bg-brand-dark cursor-pointer text-sm font-bold shadow-md shadow-orange-500/10 active:scale-[0.98] transition-transform duration-100"
+          className="w-full h-11 justify-center gap-2 bg-main hover:bg-main-dark cursor-pointer text-sm font-bold shadow-md shadow-orange-500/10 active:scale-[0.98] transition-transform duration-100"
         >
-          <Plus className="h-4 w-4 stroke-[3]" />
+          <Plus className="h-4 w-4 stroke-3" />
           <span>Add School</span>
         </Button>
         
         <Button 
           onClick={onGenerateReport}
           variant="default"
-          className="w-full h-11 justify-center gap-2 bg-brand hover:bg-brand-dark cursor-pointer text-sm font-bold shadow-md shadow-orange-500/10 active:scale-[0.98] transition-transform duration-100"
+          className="w-full h-11 justify-center gap-2 bg-main hover:bg-main-dark cursor-pointer text-sm font-bold shadow-md shadow-orange-500/10 active:scale-[0.98] transition-transform duration-100"
         >
           <Sparkles className="h-4 w-4" />
           <span>Generate Report</span>

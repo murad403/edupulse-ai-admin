@@ -138,7 +138,7 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
                 onClick={() => setValue('status', 'ACTIVE')}
                 className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${
                   currentStatus === 'ACTIVE' 
-                    ? 'border-brand text-title font-extrabold' 
+                    ? 'border-main text-title font-extrabold' 
                     : 'border-transparent text-gray-400 hover:text-gray-600'
                 }`}
               >
@@ -149,7 +149,7 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
                 onClick={() => setValue('status', 'INACTIVE')}
                 className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${
                   currentStatus === 'INACTIVE' 
-                    ? 'border-brand text-title font-extrabold' 
+                    ? 'border-main text-title font-extrabold' 
                     : 'border-transparent text-gray-400 hover:text-gray-600'
                 }`}
               >
@@ -171,7 +171,7 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
             <Button 
               type="submit" 
               disabled={isSubmitting}
-              className="h-10 px-5 text-xs font-bold bg-brand hover:bg-brand-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
+              className="h-10 px-5 text-xs font-bold bg-main hover:bg-main-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
             >
               {isSubmitting ? 'Adding...' : 'Add Profile'}
             </Button>

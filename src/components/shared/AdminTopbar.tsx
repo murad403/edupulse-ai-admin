@@ -36,7 +36,7 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
           <input 
             type="text" 
             placeholder="Search..."
-            className="w-full rounded-full border border-gray-100 bg-gray-50 py-1.5 pl-9 pr-4 text-xs text-gray-700 placeholder:text-gray-400 focus:border-brand/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand/20 transition-all duration-200"
+            className="w-full rounded-full border border-gray-100 bg-gray-50 py-1.5 pl-9 pr-4 text-xs text-gray-700 placeholder:text-gray-400 focus:border-main/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-main/20 transition-all duration-200"
           />
         </div>
       </div>
