@@ -4,20 +4,7 @@ import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { 
-  LayoutDashboard, 
-  Users, 
-  School, 
-  Compass, 
-  Sliders, 
-  FileBarChart, 
-  LayoutGrid, 
-  Clock, 
-  Settings,
-  ChevronLeft,
-  ChevronRight,
-  X
-} from 'lucide-react'
+import { LayoutDashboard, Users, School, Compass, Sliders, FileBarChart, LayoutGrid, Clock, Settings, ChevronLeft, ChevronRight, X } from 'lucide-react'
 
 interface AdminSidebarProps {
   isCollapsed: boolean
@@ -34,15 +21,14 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
     { name: 'User Management', href: '/user-management', icon: Users },
     { name: 'Schools & Classes', href: '/schools-&-classes', icon: School },
     { name: 'Standards Mapping', href: '/standards-mapping', icon: Compass },
-    { name: 'AI Configuration', href: '/ai-config', icon: Sliders },
+    { name: 'AI Configuration', href: '/ai-configuration', icon: Sliders },
     { name: 'Reports', href: '/reports', icon: FileBarChart },
-    { name: 'Content Templates', href: '/content-templates', icon: LayoutGrid },
     { name: 'Audit Logs', href: '/audit-logs', icon: Clock },
     { name: 'System Settings', href: '/settings', icon: Settings },
   ]
 
   return (
-    <aside 
+    <aside
       className={cn(
         "flex flex-col border-r border-gray-100 bg-white transition-all duration-300 shadow-sm z-50",
         // Desktop positioning & width
@@ -58,13 +44,13 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
         <div className="flex items-center gap-3 overflow-hidden">
           <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-main text-white shadow-sm shadow-orange-500/10">
             {/* Hexagon Brand Icon */}
-            <svg 
-              className="h-5 w-5" 
-              viewBox="0 0 24 24" 
-              fill="none" 
-              stroke="currentColor" 
-              strokeWidth="2.7" 
-              strokeLinecap="round" 
+            <svg
+              className="h-5 w-5"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.7"
+              strokeLinecap="round"
               strokeLinejoin="round"
             >
               <polygon points="12,3.5 19.5,7.8 19.5,16.2 12,20.5 4.5,16.2 4.5,7.8" fill="none" />
@@ -79,7 +65,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
           </div>
         </div>
         {/* Mobile close button */}
-        <button 
+        <button
           onClick={() => setIsMobileOpen(false)}
           className="lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer"
         >
@@ -91,15 +77,15 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
       <nav className="flex-1 space-y-1 px-3 py-6 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = pathname === item.href
-          
+
           return (
             <Link
               key={item.name}
               href={item.href}
               className={cn(
                 "group flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all relative overflow-hidden",
-                isActive 
-                  ? "text-main bg-orange-50/50" 
+                isActive
+                  ? "text-main bg-orange-50/50"
                   : "text-gray-500 hover:text-gray-900 hover:bg-gray-50"
               )}
             >
@@ -107,14 +93,14 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
               {isActive && (
                 <div className="absolute left-0 top-0 bottom-0 w-[3px] bg-main rounded-r-md" />
               )}
-              
-              <item.icon 
+
+              <item.icon
                 className={cn(
                   "h-5 w-5 shrink-0 transition-colors",
                   isActive ? "text-main" : "text-gray-400 group-hover:text-gray-600"
-                )} 
+                )}
               />
-              
+
               <span className={cn("transition-all duration-300", isCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100")}>
                 {item.name}
               </span>
@@ -134,8 +120,8 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
       <div className="border-t border-gray-100 p-3 bg-gray-50/40">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 overflow-hidden">
-            <img 
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
+            <img
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
               alt="Alex Mercer"
               className="h-9 w-9 shrink-0 rounded-full border border-gray-200 object-cover"
             />
@@ -144,8 +130,8 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
               <span className="text-[10px] text-gray-500 truncate leading-none whitespace-nowrap">Super Administrator</span>
             </div>
           </div>
-          
-          <button 
+
+          <button
             onClick={() => setIsCollapsed(!isCollapsed)}
             className="max-lg:hidden flex h-8 w-8 items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors cursor-pointer"
             title={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}

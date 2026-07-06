@@ -13,11 +13,10 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
 
   const getTabName = () => {
     if (pathname === '/user-management') return 'User Management'
-    if (pathname === '/schools') return 'Schools & Classes'
-    if (pathname === '/standards') return 'Standards Mapping'
-    if (pathname === '/ai-config') return 'AI Configuration'
+    if (pathname === '/schools-&-classes') return 'Schools & Classes'
+    if (pathname === '/standards-mapping') return 'Standards Mapping'
+    if (pathname === '/ai-configuration') return 'AI Configuration'
     if (pathname === '/reports') return 'Reports'
-    if (pathname === '/content-templates') return 'Content Templates'
     if (pathname === '/audit-logs') return 'Audit Logs'
     if (pathname === '/settings') return 'System Settings'
     return 'Overview'
