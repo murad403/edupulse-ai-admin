@@ -1,6 +1,7 @@
 'use client'
 
 import React from 'react'
+import { usePathname } from 'next/navigation'
 import { Bell, Search, Menu, Layout } from 'lucide-react'
 
 interface AdminTopbarProps {
@@ -8,6 +9,20 @@ interface AdminTopbarProps {
 }
 
 const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
+  const pathname = usePathname()
+
+  const getTabName = () => {
+    if (pathname === '/user-management') return 'User Management'
+    if (pathname === '/schools') return 'Schools & Classes'
+    if (pathname === '/standards') return 'Standards Mapping'
+    if (pathname === '/ai-config') return 'AI Configuration'
+    if (pathname === '/reports') return 'Reports'
+    if (pathname === '/content-templates') return 'Content Templates'
+    if (pathname === '/audit-logs') return 'Audit Logs'
+    if (pathname === '/settings') return 'System Settings'
+    return 'Overview'
+  }
+
   return (
     <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-gray-100 bg-white/80 px-4 md:px-6 backdrop-blur-md">
       {/* Left side: Panel Title & Badge */}
@@ -24,7 +39,7 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
           
           <div className="hidden sm:flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-gray-500 shadow-sm">
             <Layout className="h-3 w-3 text-gray-400" />
-            <span>Tab: Overview</span>
+            <span>Tab: {getTabName()}</span>
           </div>
         </div>
       </div>

@@ -31,7 +31,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
 
   const navItems = [
     { name: 'Overview', href: '/', icon: LayoutDashboard },
-    { name: 'User Management', href: '/users', icon: Users },
+    { name: 'User Management', href: '/user-management', icon: Users },
     { name: 'Schools & Classes', href: '/schools', icon: School },
     { name: 'Standards Mapping', href: '/standards', icon: Compass },
     { name: 'AI Configuration', href: '/ai-config', icon: Sliders },
@@ -90,8 +90,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
       {/* Navigation Items */}
       <nav className="flex-1 space-y-1 px-3 py-6 overflow-y-auto">
         {navItems.map((item) => {
-          // In this static mock, only the overview Page (/) is active
-          const isActive = item.href === '/' || pathname === item.href
+          const isActive = pathname === item.href
           
           return (
             <Link
