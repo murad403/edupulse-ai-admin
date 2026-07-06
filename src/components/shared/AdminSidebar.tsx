@@ -49,23 +49,26 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed }: AdminSidebarProps) => {
       {/* Brand Header */}
       <div className="flex h-16 items-center px-4 border-b border-gray-50 justify-between">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-main shadow-sm shadow-orange-500/10">
-            {/* Orange Brand Icon */}
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-main text-white shadow-sm shadow-orange-500/10">
+            {/* Hexagon Brand Icon */}
             <svg 
-              className="h-6 w-6" 
+              className="h-5 w-5" 
               viewBox="0 0 24 24" 
               fill="none" 
               stroke="currentColor" 
-              strokeWidth="2.5" 
+              strokeWidth="2.7" 
               strokeLinecap="round" 
               strokeLinejoin="round"
             >
-              <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+              <polygon points="12,3.5 19.5,7.8 19.5,16.2 12,20.5 4.5,16.2 4.5,7.8" fill="none" />
+              <circle cx="12" cy="12" r="2.5" fill="currentColor" />
             </svg>
           </div>
           {!isCollapsed && (
             <div className="flex flex-col tracking-tight transition-opacity duration-300">
-              <span className="font-bold text-title text-base leading-tight">EduPulse <span className="text-main">AI</span></span>
+              <span className="font-bold text-title text-base leading-tight">
+                Teachers<span className="text-main">ai</span>pet
+              </span>
               <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest leading-none">Admin Suite</span>
             </div>
           )}

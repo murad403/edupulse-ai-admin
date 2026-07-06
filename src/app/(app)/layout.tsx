@@ -19,7 +19,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         }`}
       >
         <AdminTopbar onMenuClick={() => setIsCollapsed(!isCollapsed)} />
-        <main className="flex-1 p-4 md:p-6 lg:p-8 max-w-[1600px] w-full mx-auto">
+        <main className="flex-1 p-4 md:p-6 lg:p-8 w-full mx-auto">
           {children}
         </main>
       </div>
