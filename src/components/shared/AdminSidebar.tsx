@@ -32,7 +32,7 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
   const navItems = [
     { name: 'Overview', href: '/', icon: LayoutDashboard },
     { name: 'User Management', href: '/user-management', icon: Users },
-    { name: 'Schools & Classes', href: '/schools', icon: School },
+    { name: 'Schools & Classes', href: '/schools-&-classes', icon: School },
     { name: 'Standards Mapping', href: '/standards', icon: Compass },
     { name: 'AI Configuration', href: '/ai-config', icon: Sliders },
     { name: 'Reports', href: '/reports', icon: FileBarChart },
