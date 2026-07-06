@@ -1,8 +1,13 @@
 @import "tailwindcss";
 
-
 @theme {
-    --color-main: #F97316; 
-    --color-title: #0F172A; 
-    --color-main: #475569; 
+  --color-brand: #F97316;
+  --color-brand-light: #FFEDD5;
+  --color-brand-dark: #EA580C;
+  --color-title: #0F172A;
+  --color-main: #475569;
+}
+
+body {
+  @apply bg-[#F8FAFC] text-main antialiased;
 }
