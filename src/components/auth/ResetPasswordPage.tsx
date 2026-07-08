@@ -1,11 +1,11 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { Lock, ArrowLeft } from 'lucide-react'
+import { Lock, ArrowLeft, Eye, EyeOff } from 'lucide-react'
 import { resetPasswordSchema, ResetPasswordInput } from '@/validation/auth.validation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -16,6 +16,9 @@ import { toast } from 'sonner'
 const ResetPasswordPage = () => {
   const router = useRouter()
   const [resetPassword] = useResetPasswordMutation()
+  
+  const [showPassword, setShowPassword] = useState(false)
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
   const {
     register,
@@ -77,11 +80,18 @@ const ResetPasswordPage = () => {
           <div className="relative w-full">
             <Lock className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
             <Input 
-              type="password"
-              placeholder="Minimum 6 characters"
+              type={showPassword ? 'text' : 'password'}
+              placeholder="Minimum 8 characters"
               {...register('password')}
-              className="pl-9.5 text-sm text-slate-700 font-semibold bg-gray-50/20 focus:bg-white"
+              className="pl-9.5 pr-10 text-sm text-slate-700 font-semibold bg-gray-50/20 focus:bg-white"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            >
+              {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.password && (
             <span className="text-[10px] font-bold text-red-500 leading-none">
@@ -96,11 +106,18 @@ const ResetPasswordPage = () => {
           <div className="relative w-full">
             <Lock className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
             <Input 
-              type="password"
+              type={showConfirmPassword ? 'text' : 'password'}
               placeholder="Repeat clean credentials"
               {...register('confirmPassword')}
-              className="pl-9.5 text-sm text-slate-700 font-semibold bg-gray-50/20 focus:bg-white"
+              className="pl-9.5 pr-10 text-sm text-slate-700 font-semibold bg-gray-50/20 focus:bg-white"
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
+            >
+              {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+            </button>
           </div>
           {errors.confirmPassword && (
             <span className="text-[10px] font-bold text-red-500 leading-none">
