@@ -32,15 +32,15 @@ interface UserCardProps {
 
 const UserCard = ({ user, onSelect, onDelete, onChangeStatus }: UserCardProps) => {
   return (
-    <div 
+    <div
       onClick={() => onSelect(user)}
       className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer flex flex-col justify-between min-h-[230px] h-auto"
     >
       {/* Top Header */}
       <div className="flex items-center gap-3">
-        <img 
-          src={user.avatar} 
-          alt={user.name} 
+        <img
+          src={user.avatar}
+          alt={user.name}
           className="h-10 w-10 rounded-full object-cover border border-gray-100"
         />
         <div className="flex flex-col text-left">
@@ -49,8 +49,8 @@ const UserCard = ({ user, onSelect, onDelete, onChangeStatus }: UserCardProps) =
         </div>
         <span className={cn(
           "ml-auto text-[8px] font-extrabold uppercase tracking-wide px-2 py-0.5 rounded-md",
-          user.status === 'ACTIVE' 
-            ? "bg-emerald-50 text-emerald-600" 
+          user.status === 'ACTIVE'
+            ? "bg-emerald-50 text-emerald-600"
             : "bg-gray-100 text-gray-400"
         )}>
           {user.status}

@@ -155,17 +155,6 @@ const UserManagementPage = () => {
         </div>
         
         <div className="flex items-center gap-3">
-          {/* Track Filter */}
-          <select 
-            value={trackFilter}
-            onChange={(e) => setTrackFilter(e.target.value)}
-            className="appearance-none rounded-lg border border-gray-200 bg-white px-3.5 py-1.5 pr-8 text-xs font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-main/20 focus:border-main bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M7%209l3%203%203-3%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-position-[right_8px_center] bg-size-[16px] bg-no-repeat cursor-pointer shadow-sm hover:bg-gray-50 transition-colors"
-          >
-            <option value="ALL">On Track (Standard)</option>
-            <option value="STANDARD">Oakwood High Only</option>
-          </select>
-
-          {/* Status Filter */}
           <select 
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}

@@ -7,7 +7,7 @@ import { cn } from '@/lib/utils'
 const AiConfigurationPage = () => {
   const [temperature, setTemperature] = useState(0.47)
   const [maxTokens, setMaxTokens] = useState(2560)
-  const [selectedModel, setSelectedModel] = useState<'flash' | 'pro'>('flash')
+  const [selectedModel, setSelectedModel] = useState<'gpt-4o-mini' | 'gpt-4o'>('gpt-4o-mini')
   const [guardrailsEnabled, setGuardrailsEnabled] = useState(true)
   const [promptOverlay, setPromptOverlay] = useState(
     'Always behave as an empathetic expert pedagogue. Align your outputs to mapped K-12 standards. Inject Socratic questions to foster analytical thinking when students prompt answers.'
@@ -90,45 +90,45 @@ const AiConfigurationPage = () => {
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            {/* Gemini 2.5 Flash */}
+            {/* GPT-4o mini */}
             <div 
-              onClick={() => setSelectedModel('flash')}
+              onClick={() => setSelectedModel('gpt-4o-mini')}
               className={cn(
                 "rounded-xl border p-4 bg-white shadow-xs cursor-pointer transition-all duration-200 select-none flex flex-col justify-between h-[120px]",
-                selectedModel === 'flash' 
+                selectedModel === 'gpt-4o-mini' 
                   ? "border-main ring-2 ring-main/10" 
                   : "border-gray-100 hover:border-gray-300"
               )}
             >
               <div className="text-left">
-                <h4 className="text-xs font-extrabold text-title">Gemini 2.5 Flash</h4>
+                <h4 className="text-xs font-extrabold text-title">GPT-4o mini</h4>
                 <p className="text-[10px] font-semibold text-gray-400 mt-1 leading-normal">
                   Best for immediate interactive queries & quiz tasks.
                 </p>
               </div>
               <span className="text-[10px] font-bold text-emerald-600 leading-none">
-                Latency: Rapid (&lt;1.2s)
+                Latency: Rapid (&lt;1.0s)
               </span>
             </div>
 
-            {/* Gemini 2.5 Pro */}
+            {/* GPT-4o */}
             <div 
-              onClick={() => setSelectedModel('pro')}
+              onClick={() => setSelectedModel('gpt-4o')}
               className={cn(
                 "rounded-xl border p-4 bg-white shadow-xs cursor-pointer transition-all duration-200 select-none flex flex-col justify-between h-[120px]",
-                selectedModel === 'pro' 
+                selectedModel === 'gpt-4o' 
                   ? "border-main ring-2 ring-main/10" 
                   : "border-gray-100 hover:border-gray-300"
               )}
             >
               <div className="text-left">
-                <h4 className="text-xs font-extrabold text-title">Gemini 2.5 Pro</h4>
+                <h4 className="text-xs font-extrabold text-title">GPT-4o</h4>
                 <p className="text-[10px] font-semibold text-gray-400 mt-1 leading-normal">
                   Deep multi-tier curriculum generation & mapping.
                 </p>
               </div>
               <span className="text-[10px] font-bold text-emerald-600 leading-none">
-                Latency: Standard (&lt;2.4s)
+                Latency: Standard (&lt;2.0s)
               </span>
             </div>
 

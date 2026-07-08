@@ -20,10 +20,10 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
     { name: 'Overview', href: '/', icon: LayoutDashboard },
     { name: 'User Management', href: '/user-management', icon: Users },
     { name: 'Schools & Classes', href: '/schools-&-classes', icon: School },
-    { name: 'Standards Mapping', href: '/standards-mapping', icon: Compass },
+    // { name: 'Standards Mapping', href: '/standards-mapping', icon: Compass },
     { name: 'AI Configuration', href: '/ai-configuration', icon: Sliders },
     { name: 'Reports', href: '/reports', icon: FileBarChart },
-    { name: 'Audit Logs', href: '/audit-logs', icon: Clock },
+    // { name: 'Audit Logs', href: '/audit-logs', icon: Clock },
     { name: 'System Settings', href: '/settings', icon: Settings },
   ]
 
