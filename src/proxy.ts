@@ -24,12 +24,6 @@ export default async function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
+    "/" , "/user-management" , "/schools-&-classes" , "/standards-mapping" , "/ai-configuration" , "/reports" , "/audit-logs" , "/settings" , "/auth/:path*"
   ],
 };
