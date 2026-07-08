@@ -10,9 +10,13 @@ import { forgotPasswordSchema, ForgotPasswordInput } from '@/validation/auth.val
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { useForgotPasswordMutation } from '@/redux/features/auth/auth.api'
+import { toast } from 'sonner'
 
 const ForgotPasswordPage = () => {
   const router = useRouter()
+  const [forgotPassword] = useForgotPasswordMutation()
+
   const {
     register,
     handleSubmit,
@@ -25,16 +29,22 @@ const ForgotPasswordPage = () => {
   })
 
   const onSubmit = async (data: ForgotPasswordInput) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    console.log('OTP request sent to:', data.email)
-    router.push('/auth/verify-otp')
+    const toastId = toast.loading('Sending OTP request...')
+    try {
+      const response = await forgotPassword({ email: data.email }).unwrap()
+      toast.success(response.message || 'If an account exists, an OTP has been sent.', { id: toastId })
+      sessionStorage.setItem('reset_email', data.email)
+      router.push('/auth/verify-otp')
+    } catch (err: any) {
+      console.error(err)
+      const errMsg = err?.data?.message || 'Failed to request OTP.'
+      toast.error(errMsg, { id: toastId })
+    }
   }
 
   return (
     <div className="w-full max-w-md mx-auto rounded-2xl border border-gray-100 bg-white p-8 shadow-xl text-center animate-in fade-in duration-300">
       
-
       {/* Subtitles */}
       <h2 className="text-xl font-extrabold text-title">Forgot Credentials?</h2>
       <p className="text-sm font-semibold text-gray-400 mt-1 mb-8">

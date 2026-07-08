@@ -5,14 +5,16 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { KeyRound, ArrowLeft } from 'lucide-react'
+import { ArrowLeft } from 'lucide-react'
 import { verifyOtpSchema, VerifyOtpInput } from '@/validation/auth.validation'
-import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { useVerifyOtpMutation } from '@/redux/features/auth/auth.api'
+import { toast } from 'sonner'
 
 const VerifyOtpPage = () => {
   const router = useRouter()
+  const [verifyOtp] = useVerifyOtpMutation()
   const [otpValues, setOtpValues] = React.useState<string[]>(['', '', '', '', '', ''])
   const inputRefs = React.useRef<(HTMLInputElement | null)[]>([])
 
@@ -34,26 +36,39 @@ const VerifyOtpPage = () => {
   }, [register])
 
   const onSubmit = async (data: VerifyOtpInput) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    console.log('OTP verified successfully:', data.otp)
-    router.push('/auth/reset-password')
+    const email = sessionStorage.getItem('reset_email')
+    if (!email) {
+      toast.error('Session expired. Please request OTP again.')
+      router.push('/auth/forgot-password')
+      return
+    }
+
+    const toastId = toast.loading('Verifying code...')
+    try {
+      const response = await verifyOtp({
+        email: email,
+        otp_code: data.otp
+      }).unwrap()
+      toast.success(response.message || 'OTP verified. Proceed to reset password.', { id: toastId })
+      sessionStorage.setItem('reset_token', response.data.reset_token.toString())
+      router.push('/auth/reset-password')
+    } catch (err: any) {
+      console.error(err)
+      const errMsg = err?.data?.message || 'Invalid verification code.'
+      toast.error(errMsg, { id: toastId })
+    }
   }
 
   const handleChange = (index: number, val: string) => {
-    // Only allow numeric input
     if (val !== '' && !/^\d+$/.test(val)) return
 
     const newValues = [...otpValues]
-    // Capture only the last character entered
     newValues[index] = val.slice(-1)
     setOtpValues(newValues)
 
-    // Sync to RHF hidden field
     const fullCode = newValues.join('')
     setValue('otp', fullCode, { shouldValidate: true })
 
-    // Move focus forward if not empty
     if (val !== '' && index < 5) {
       inputRefs.current[index + 1]?.focus()
     }
@@ -63,7 +78,6 @@ const VerifyOtpPage = () => {
     if (e.key === 'Backspace') {
       const newValues = [...otpValues]
       if (newValues[index] === '') {
-        // Shift focus back on backspace and delete previous
         if (index > 0) {
           newValues[index - 1] = ''
           setOtpValues(newValues)
@@ -81,7 +95,7 @@ const VerifyOtpPage = () => {
   const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     e.preventDefault()
     const pastedData = e.clipboardData.getData('text').trim()
-    if (!/^\d{6}$/.test(pastedData)) return // Ensure exactly 6 numeric digits
+    if (!/^\d{6}$/.test(pastedData)) return
 
     const digits = pastedData.split('')
     setOtpValues(digits)

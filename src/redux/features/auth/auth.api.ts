@@ -1,5 +1,5 @@
 import baseApi from "@/redux/api/api";
-import { SignInResponse, ProfileResponse } from "./auth.type";
+import { SignInResponse, ProfileResponse, ForgotPasswordInputPayload, ForgotPasswordResponse, VerifyOtpInputPayload, VerifyOtpResponse, ResetPasswordPayload, ResetPasswordResponse } from "./auth.type";
 import { SignInInput } from "@/validation/auth.validation";
 
 const authApi = baseApi.injectEndpoints({
@@ -8,6 +8,33 @@ const authApi = baseApi.injectEndpoints({
             query: (data) => {
                 return {
                     url: "/admin/login",
+                    method: "POST",
+                    body: data
+                }
+            }
+        }),
+        forgotPassword: builder.mutation<ForgotPasswordResponse, ForgotPasswordInputPayload>({
+            query: (data) => {
+                return {
+                    url: "/auth/forgot-password",
+                    method: "POST",
+                    body: data
+                }
+            }
+        }),
+        verifyOtp: builder.mutation<VerifyOtpResponse, VerifyOtpInputPayload>({
+            query: (data) => {
+                return {
+                    url: "/auth/forgot-password/verify",
+                    method: "POST",
+                    body: data
+                }
+            }
+        }),
+        resetPassword: builder.mutation<ResetPasswordResponse, ResetPasswordPayload>({
+            query: (data) => {
+                return {
+                    url: "/auth/reset-password",
                     method: "POST",
                     body: data
                 }
@@ -39,4 +66,7 @@ export const {
     useSignInMutation,
     useGetProfileQuery,
     useUpdateProfileMutation,
+    useForgotPasswordMutation,
+    useVerifyOtpMutation,
+    useResetPasswordMutation,
 } = authApi;

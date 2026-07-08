@@ -10,9 +10,13 @@ import { resetPasswordSchema, ResetPasswordInput } from '@/validation/auth.valid
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { useResetPasswordMutation } from '@/redux/features/auth/auth.api'
+import { toast } from 'sonner'
 
 const ResetPasswordPage = () => {
   const router = useRouter()
+  const [resetPassword] = useResetPasswordMutation()
+
   const {
     register,
     handleSubmit,
@@ -26,11 +30,33 @@ const ResetPasswordPage = () => {
   })
 
   const onSubmit = async (data: ResetPasswordInput) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    console.log('Password reset successfully')
-    alert('Your password has been successfully reset! Redirecting to sign in page...')
-    router.push('/auth/sign-in')
+    const tokenStr = sessionStorage.getItem('reset_token')
+    if (!tokenStr) {
+      toast.error('Session expired. Please verify OTP again.')
+      router.push('/auth/forgot-password')
+      return
+    }
+
+    const resetToken = Number(tokenStr)
+    const toastId = toast.loading('Saving new password...')
+    try {
+      const response = await resetPassword({
+        reset_token: resetToken,
+        new_password: data.password,
+        confirm_password: data.confirmPassword
+      }).unwrap()
+      toast.success(response.message || 'Password reset successfully. Please log in.', { id: toastId })
+      
+      // Clear sessions
+      sessionStorage.removeItem('reset_email')
+      sessionStorage.removeItem('reset_token')
+
+      router.push('/auth/sign-in')
+    } catch (err: any) {
+      console.error(err)
+      const errMsg = err?.data?.message || 'Failed to reset password.'
+      toast.error(errMsg, { id: toastId })
+    }
   }
 
   return (

@@ -38,4 +38,45 @@ export interface ProfileResponse {
   data: ProfileData;
   timestamp: string;
 }
+export interface ForgotPasswordInputPayload {
+  email: string;
+}
 
+export interface ForgotPasswordResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: any;
+  timestamp: string;
+}
+
+export interface VerifyOtpInputPayload {
+  email: string;
+  otp_code: string;
+}
+
+export interface VerifyOtpData {
+  reset_token: number;
+}
+
+export interface VerifyOtpResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: VerifyOtpData;
+  timestamp: string;
+}
+
+export interface ResetPasswordPayload {
+  reset_token: number;
+  new_password: string;
+  confirm_password: string;
+}
+
+export interface ResetPasswordResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: any;
+  timestamp: string;
+}
