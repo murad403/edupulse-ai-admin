@@ -29,19 +29,11 @@ const OverviewStats = () => {
       iconColor: 'text-main',
       iconBg: 'bg-orange-50',
       valueColor: 'text-title'
-    },
-    {
-      title: 'System Health',
-      value: '98%',
-      icon: ShieldCheck,
-      iconColor: 'text-emerald-600',
-      iconBg: 'bg-emerald-50',
-      valueColor: 'text-emerald-600'
     }
   ]
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
       {stats.map((stat, index) => {
         const Icon = stat.icon
         return (

@@ -31,10 +31,6 @@ const TopActiveSchools = () => {
             </div>
           ))}
         </div>
-        
-        <button className="text-[11px] font-bold text-gray-400 hover:text-gray-600 hover:underline transition-all text-center mt-3 cursor-pointer">
-          View All District Affiliates
-        </button>
       </div>
     </div>
   )

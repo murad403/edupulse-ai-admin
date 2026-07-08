@@ -10,10 +10,12 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 
 const schema = z.object({
-  fullName: z.string().min(2, { message: 'Full name must be at least 2 characters.' }),
+  firstName: z.string().min(2, { message: 'First name must be at least 2 characters.' }),
+  lastName: z.string().min(2, { message: 'Last name must be at least 2 characters.' }),
   email: z.string().email({ message: 'Please enter a valid professional email.' }),
   schoolAffiliation: z.string().min(2, { message: 'School affiliation is required.' }),
-  specialization: z.string().min(2, { message: 'Specialization / subject is required.' }),
+  grade: z.string().min(1, { message: 'Grade is required.' }),
+  classRoom: z.string().min(1, { message: 'Class Room is required.' }),
   status: z.enum(['ACTIVE', 'INACTIVE'])
 })
 
@@ -35,10 +37,12 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      fullName: '',
+      firstName: '',
+      lastName: '',
       email: '',
       schoolAffiliation: '',
-      specialization: '',
+      grade: '',
+      classRoom: '',
       status: 'ACTIVE'
     }
   })
@@ -50,7 +54,7 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
   const onSubmit = async (data: FormData) => {
     // Simulate API call
     console.log('Teacher submitted: ', data)
-    alert(`Success! Created account for ${data.fullName}`)
+    alert(`Success! Created account for ${data.firstName} ${data.lastName}`)
     reset()
     onClose()
   }
@@ -75,17 +79,31 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
         {/* Modal Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           
-          {/* Full Name */}
-          <div className="flex flex-col">
-            <Label htmlFor="fullName">Teacher Full Name</Label>
-            <Input 
-              id="fullName" 
-              placeholder="e.g. Sarah Jenkins"
-              {...register('fullName')}
-            />
-            {errors.fullName && (
-              <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.fullName.message}</span>
-            )}
+          {/* First and Last Name */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="flex flex-col">
+              <Label htmlFor="firstName">First Name</Label>
+              <Input 
+                id="firstName" 
+                placeholder="e.g. Sarah"
+                {...register('firstName')}
+              />
+              {errors.firstName && (
+                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.firstName.message}</span>
+              )}
+            </div>
+
+            <div className="flex flex-col">
+              <Label htmlFor="lastName">Last Name</Label>
+              <Input 
+                id="lastName" 
+                placeholder="e.g. Jenkins"
+                {...register('lastName')}
+              />
+              {errors.lastName && (
+                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.lastName.message}</span>
+              )}
+            </div>
           </div>
 
           {/* Email */}
@@ -102,29 +120,42 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
             )}
           </div>
 
-          {/* School & Specialization Grid */}
+          {/* School Affiliation */}
+          <div className="flex flex-col">
+            <Label htmlFor="schoolAffiliation">School Affiliation</Label>
+            <Input 
+              id="schoolAffiliation" 
+              placeholder="e.g. Oakwood High School"
+              {...register('schoolAffiliation')}
+            />
+            {errors.schoolAffiliation && (
+              <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.schoolAffiliation.message}</span>
+            )}
+          </div>
+
+          {/* Grade & Class Room Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col">
-              <Label htmlFor="schoolAffiliation">School Affiliation</Label>
+              <Label htmlFor="grade">Grade</Label>
               <Input 
-                id="schoolAffiliation" 
-                placeholder="e.g. Oakwood High School"
-                {...register('schoolAffiliation')}
+                id="grade" 
+                placeholder="e.g. 5th Grade"
+                {...register('grade')}
               />
-              {errors.schoolAffiliation && (
-                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.schoolAffiliation.message}</span>
+              {errors.grade && (
+                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.grade.message}</span>
               )}
             </div>
 
             <div className="flex flex-col">
-              <Label htmlFor="specialization">Specialization / Subject</Label>
+              <Label htmlFor="classRoom">Class Room</Label>
               <Input 
-                id="specialization" 
-                placeholder="Biology Teacher"
-                {...register('specialization')}
+                id="classRoom" 
+                placeholder="e.g. Room 204"
+                {...register('classRoom')}
               />
-              {errors.specialization && (
-                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.specialization.message}</span>
+              {errors.classRoom && (
+                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.classRoom.message}</span>
               )}
             </div>
           </div>

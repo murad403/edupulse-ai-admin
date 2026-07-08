@@ -20,10 +20,6 @@ const PlatformUsageChart = () => {
       {/* Chart Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-base font-bold text-title">Platform Usage</h3>
-        <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-600">
-          <TrendingUp className="h-3.5 w-3.5" />
-          <span>+14.2% up week-over-week</span>
-        </div>
       </div>
 
       {/* Chart Canvas */}
