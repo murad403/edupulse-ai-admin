@@ -164,4 +164,13 @@ export interface GenerateReportResponse {
   timestamp: string;
 }
 
+export interface SchoolDetailsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: SchoolItem;
+  timestamp: string;
+}
+
+
 

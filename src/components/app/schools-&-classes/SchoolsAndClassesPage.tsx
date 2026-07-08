@@ -2,105 +2,29 @@
 
 import React, { useState } from 'react'
 import { School } from 'lucide-react'
-import SchoolAndClassCard, { SchoolProfile } from './SchoolAndClassCard'
+import SchoolAndClassCard from './SchoolAndClassCard'
 import SchoolAndClassDetailsModal from '@/components/modal/SchoolAndClassDetailsModal'
-
-const mockSchools: SchoolProfile[] = [
-  {
-    id: '683417',
-    name: 'Oakwood High School',
-    region: 'Northeast District',
-    status: 'ACTIVE',
-    staffLeads: 38,
-    enrolledStudents: 820,
-    apiRequests: '1,450',
-    leadCoordinator: 'Dr. Helen Vance',
-    registrationDate: 'September 12, 2025',
-    gatewayServer: 'ingress-pool-38.edupulse',
-    alignmentStatus: 'COMPLIANT'
-  },
-  {
-    id: '492019',
-    name: 'Lincoln Magnet Academy',
-    region: 'Pacific Northwest',
-    status: 'ACTIVE',
-    staffLeads: 29,
-    enrolledStudents: 610,
-    apiRequests: '1,210',
-    leadCoordinator: 'Marcus Chen',
-    registrationDate: 'October 5, 2025',
-    gatewayServer: 'ingress-pool-12.edupulse',
-    alignmentStatus: 'COMPLIANT'
-  },
-  {
-    id: '781902',
-    name: 'Riverdale STEM Charter',
-    region: 'Southeast Coast',
-    status: 'ACTIVE',
-    staffLeads: 22,
-    enrolledStudents: 450,
-    apiRequests: '980',
-    leadCoordinator: 'Elena Rostova',
-    registrationDate: 'November 1, 2025',
-    gatewayServer: 'ingress-pool-45.edupulse',
-    alignmentStatus: 'COMPLIANT'
-  },
-  {
-    id: '330291',
-    name: 'Metropolitan Tech High',
-    region: 'Midwest Central',
-    status: 'ACTIVE',
-    staffLeads: 31,
-    enrolledStudents: 740,
-    apiRequests: '840',
-    leadCoordinator: 'David Kojo',
-    registrationDate: 'August 20, 2025',
-    gatewayServer: 'ingress-pool-08.edupulse',
-    alignmentStatus: 'COMPLIANT'
-  },
-  {
-    id: '109283',
-    name: 'Heights Elementary',
-    region: 'Rocky Mountains',
-    status: 'ACTIVE',
-    staffLeads: 18,
-    enrolledStudents: 320,
-    apiRequests: '620',
-    leadCoordinator: 'Amina Al-Jamil',
-    registrationDate: 'September 29, 2025',
-    gatewayServer: 'ingress-pool-19.edupulse',
-    alignmentStatus: 'COMPLIANT'
-  },
-  {
-    id: '582910',
-    name: 'Crescent Valley Prep',
-    region: 'Southwest Valley',
-    status: 'INACTIVE',
-    staffLeads: 12,
-    enrolledStudents: 210,
-    apiRequests: '410',
-    leadCoordinator: 'Robert Ramirez',
-    registrationDate: 'December 15, 2025',
-    gatewayServer: 'ingress-pool-22.edupulse',
-    alignmentStatus: 'NON-COMPLIANT'
-  }
-]
+import { useGetSchoolsQuery } from '@/redux/features/dashboard/dashboard.api'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const SchoolsAndClassesPage = () => {
-  const [selectedSchool, setSelectedSchool] = useState<SchoolProfile | null>(null)
+  const { data, isLoading } = useGetSchoolsQuery()
+  const [selectedSchoolId, setSelectedSchoolId] = useState<number | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  const handleSelectSchool = (school: SchoolProfile) => {
-    setSelectedSchool(school)
+  const handleSelectSchool = (schoolId: number) => {
+    setSelectedSchoolId(schoolId)
     setIsModalOpen(true)
   }
+
+  const schools = data?.data?.results || []
 
   return (
     <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
       
       {/* Header Info Card */}
       <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex flex-col text-left">
+        <div className="flex flex-col text-left flex-1 min-w-0">
           <h3 className="text-base font-bold text-title">District Partners Network</h3>
           <p className="text-xs font-semibold text-gray-400 mt-1">
             Browse and coordinate academic institutions utilizing the EduPulse AI assistant frameworks.
@@ -110,28 +34,59 @@ const SchoolsAndClassesPage = () => {
         {/* Entries Counter Badge */}
         <div className="flex items-center gap-1.5 rounded-lg border border-gray-100 bg-gray-50/50 px-3 py-1.5 text-xs font-bold text-gray-500 shadow-sm shrink-0">
           <School className="h-4 w-4 text-gray-400" />
-          <span>{mockSchools.length} total register entries</span>
+          {isLoading ? (
+            <Skeleton className="h-4 w-12" />
+          ) : (
+            <span>{schools.length} total register entries</span>
+          )}
         </div>
       </div>
 
       {/* Grid List */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {mockSchools.map((school) => (
-          <SchoolAndClassCard 
-            key={school.id}
-            school={school}
-            onSelect={handleSelectSchool}
-          />
-        ))}
+        {isLoading ? (
+          [...Array(6)].map((_, i) => (
+            <div key={i} className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col justify-between h-[160px] animate-pulse">
+              <div className="flex items-start gap-3">
+                <Skeleton className="h-9 w-9 rounded-lg shrink-0" />
+                <div className="flex-1 space-y-2">
+                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-3.5 w-24" />
+                </div>
+                <Skeleton className="h-4 w-12 rounded-md shrink-0" />
+              </div>
+              <div className="grid grid-cols-3 gap-3 mt-5">
+                {[...Array(3)].map((_, j) => (
+                  <div key={j} className="flex flex-col items-center justify-center bg-slate-50/65 py-2.5 px-1.5 rounded-lg border border-slate-100/50 gap-1.5">
+                    <Skeleton className="h-2 w-12" />
+                    <Skeleton className="h-4 w-6" />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))
+        ) : schools.length > 0 ? (
+          schools.map((school) => (
+            <SchoolAndClassCard 
+              key={school.school_id}
+              school={school}
+              onSelect={handleSelectSchool}
+            />
+          ))
+        ) : (
+          <div className="col-span-full py-16 text-center text-sm text-gray-400 font-semibold bg-white border border-gray-100 rounded-xl">
+            No registered schools found.
+          </div>
+        )}
       </div>
 
       {/* Details Modal */}
       <SchoolAndClassDetailsModal 
-        school={selectedSchool}
+        schoolId={selectedSchoolId}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false)
-          setSelectedSchool(null)
+          setSelectedSchoolId(null)
         }}
       />
 

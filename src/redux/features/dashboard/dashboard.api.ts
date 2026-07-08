@@ -1,5 +1,5 @@
 import baseApi from "@/redux/api/api";
-import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse } from "./dashboard.type";
+import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse } from "./dashboard.type";
 
 
 const dashboardApi = baseApi.injectEndpoints({
@@ -61,6 +61,15 @@ const dashboardApi = baseApi.injectEndpoints({
       },
       providesTags: ["Schools"],
     }),
+    getSchoolAndClassDetails: builder.query<SchoolDetailsResponse, number>({
+      query: (school_id) => {
+        return {
+          url: `/admin/schools/${school_id}/`,
+          method: "GET"
+        };
+      },
+      providesTags: ["Schools"],
+    }),
 
     // teacher************************************************************************
     addTeacher: builder.mutation<AddTeacherResponse, AddTeacherInput>({
@@ -94,4 +103,5 @@ export const {
   useGetSchoolsQuery,
   useAddTeacherMutation,
   useGenerateReportMutation,
+  useGetSchoolAndClassDetailsQuery,
 } = dashboardApi;
