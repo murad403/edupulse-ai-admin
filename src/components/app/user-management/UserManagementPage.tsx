@@ -2,146 +2,63 @@
 
 import React, { useState } from 'react'
 import { Filter } from 'lucide-react'
-import UserCard, { UserProfile } from './UserCard'
+import UserCard from './UserCard'
 import UserDetailsModal from '@/components/modal/UserDetailsModal'
-
-const initialUsers: UserProfile[] = [
-  {
-    id: 'TCH-2983',
-    name: 'Sarah Jenkins',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    role: 'Biology Teacher',
-    school: 'Oakwood High School',
-    email: 'sarah.j@oakwood.edu',
-    lastActive: '2 mins ago',
-    limit: '60 API requests/min',
-    status: 'ACTIVE',
-    classrooms: [
-      { name: 'AP Science Advanced Study Group', pupils: 28, badge: 'High Prompt Rate' },
-      { name: 'Curriculum Homeroom 10-A', pupils: 24, badge: 'Completed Standards Q2' },
-      { name: 'Introductory Biology Practical Lab', pupils: 31, badge: 'Standard Setup' }
-    ]
-  },
-  {
-    id: 'TCH-4810',
-    name: 'Marcus Chen',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    role: 'Physics Chair',
-    school: 'Lincoln Magnet Academy',
-    email: 'm.chen@lincoln.edu',
-    lastActive: '1 hour ago',
-    limit: '80 API requests/min',
-    status: 'ACTIVE',
-    classrooms: [
-      { name: 'AP Physics Mechanics C', pupils: 18, badge: 'High Prompt Rate' },
-      { name: 'Lincoln Honors Physics Lab', pupils: 22, badge: 'Standard Setup' }
-    ]
-  },
-  {
-    id: 'TCH-9218',
-    name: 'Elena Rostova',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    role: 'Math Educator',
-    school: 'Riverdale STEM Charter',
-    email: 'e.rostova@riverdale.org',
-    lastActive: '3 hours ago',
-    limit: '40 API requests/min',
-    status: 'INACTIVE',
-    classrooms: [
-      { name: 'Calculus BC Prep Group', pupils: 30, badge: 'Muted Usage' },
-      { name: 'Trigonometry Homeroom', pupils: 25, badge: 'Standard Setup' }
-    ]
-  },
-  {
-    id: 'TCH-3371',
-    name: 'David Kojo',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    role: 'Computer Science Lead',
-    school: 'Metropolitan Tech High',
-    email: 'd.kojo@metrotech.gov',
-    lastActive: '1 day ago',
-    limit: '100 API requests/min',
-    status: 'ACTIVE',
-    classrooms: [
-      { name: 'Intro to Python Coding', pupils: 35, badge: 'High Prompt Rate' },
-      { name: 'AP Computer Science Principles', pupils: 28, badge: 'Standard Setup' }
-    ]
-  },
-  {
-    id: 'TCH-1092',
-    name: 'Amina Al-Jamil',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    role: 'Instructional Coach',
-    school: 'Heights Elementary',
-    email: 'a.jamil@heights.edu',
-    lastActive: '2 days ago',
-    limit: '30 API requests/min',
-    status: 'INACTIVE',
-    classrooms: [
-      { name: 'Primary Math Concepts', pupils: 20, badge: 'Standard Setup' }
-    ]
-  },
-  {
-    id: 'TCH-8524',
-    name: 'Robert Ramirez',
-    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    role: 'English Literature',
-    school: 'Oakwood High School',
-    email: 'robert.r@oakwood.edu',
-    lastActive: '3 days ago',
-    limit: '50 API requests/min',
-    status: 'ACTIVE',
-    classrooms: [
-      { name: 'AP English Literature', pupils: 26, badge: 'Completed Standards Q2' },
-      { name: 'Creative Writing Seminar', pupils: 15, badge: 'Standard Setup' }
-    ]
-  }
-]
+import UserEditModal from '@/components/modal/UserEditModal'
+import UserDeleteModal from '@/components/modal/UserDeleteModal'
+import UserApproveModal from '@/components/modal/UserApproveModal'
+import { useGetUsersQuery } from '@/redux/features/dashboard/dashboard.api'
+import { TeacherItem } from '@/redux/features/dashboard/dashboard.type'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const UserManagementPage = () => {
-  const [users, setUsers] = useState<UserProfile[]>(initialUsers)
-  const [selectedUser, setSelectedUser] = useState<UserProfile | null>(null)
+  const { data, isLoading } = useGetUsersQuery()
+
+  const [selectedTeacherId, setSelectedTeacherId] = useState<number | null>(null)
   const [isDetailsOpen, setIsDetailsOpen] = useState(false)
-  
+
+  const [deleteTeacherId, setDeleteTeacherId] = useState<number | null>(null)
+  const [isDeleteOpen, setIsDeleteOpen] = useState(false)
+
+  const [approveTeacherId, setApproveTeacherId] = useState<number | null>(null)
+  const [isApproveOpen, setIsApproveOpen] = useState(false)
+
+  const [editingUser, setEditingUser] = useState<TeacherItem | null>(null)
+  const [isEditOpen, setIsEditOpen] = useState(false)
+
   // Filter states
-  const [trackFilter, setTrackFilter] = useState('ALL')
   const [statusFilter, setStatusFilter] = useState('ALL')
 
-  const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this teacher account?')) {
-      setUsers(users.filter(u => u.id !== id))
-    }
+  const handleDeleteClick = (id: number) => {
+    setDeleteTeacherId(id)
+    setIsDeleteOpen(true)
   }
 
-  const handleChangeStatus = (id: string) => {
-    setUsers(users.map(u => {
-      if (u.id === id) {
-        return {
-          ...u,
-          status: u.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
-        }
-      }
-      return u
-    }))
+  const handleApproveClick = (id: number) => {
+    setApproveTeacherId(id)
+    setIsApproveOpen(true)
   }
 
-  const handleSelectUser = (user: UserProfile) => {
-    setSelectedUser(user)
+  const handleSelectUser = (user: TeacherItem) => {
+    setSelectedTeacherId(user.teacher_id)
     setIsDetailsOpen(true)
   }
 
+  const handleEditClick = (user: TeacherItem) => {
+    setEditingUser(user)
+    setIsEditOpen(true)
+  }
+
+  const teachers = data?.data?.results || []
+
   // Apply filters
-  const filteredUsers = users.filter(user => {
+  const filteredUsers = teachers.filter(user => {
     const matchesStatus = 
       statusFilter === 'ALL' || 
-      (statusFilter === 'ACTIVE' && user.status === 'ACTIVE') ||
-      (statusFilter === 'INACTIVE' && user.status === 'INACTIVE')
+      (statusFilter === 'ACTIVE' && user.approval_status === 'approved') ||
+      (statusFilter === 'INACTIVE' && user.approval_status === 'pending')
 
-    const matchesTrack = 
-      trackFilter === 'ALL' ||
-      (trackFilter === 'STANDARD' && user.school === 'Oakwood High School') // Mock standard filter: only shows Oakwood High
-
-    return matchesStatus && matchesTrack
+    return matchesStatus
   })
 
   return (
@@ -161,22 +78,56 @@ const UserManagementPage = () => {
             className="appearance-none rounded-lg border border-gray-200 bg-white px-3.5 py-1.5 pr-8 text-xs font-semibold text-gray-500 focus:outline-none focus:ring-2 focus:ring-main/20 focus:border-main bg-[url('data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22none%22%3E%3Cpath%20d%3D%22M7%209l3%203%203-3%22%20stroke%3D%22%239CA3AF%22%20stroke-width%3D%221.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%2F%3E%3C%2Fsvg%3E')] bg-position-[right_8px_center] bg-size-[16px] bg-no-repeat cursor-pointer shadow-sm hover:bg-gray-50 transition-colors"
           >
             <option value="ALL">All Statuses</option>
-            <option value="ACTIVE">Active Only</option>
-            <option value="INACTIVE">Inactive Only</option>
+            <option value="ACTIVE">Approved Only</option>
+            <option value="INACTIVE">Pending Only</option>
           </select>
         </div>
       </div>
 
       {/* Directory Grid */}
-      {filteredUsers.length > 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm flex flex-col justify-between min-h-[230px] h-auto animate-pulse">
+              <div className="flex items-center gap-3">
+                <Skeleton className="h-10 w-10 rounded-full shrink-0" />
+                <div className="space-y-1.5 flex-1">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-3 w-16" />
+                </div>
+                <Skeleton className="h-4 w-12 rounded-md shrink-0" />
+              </div>
+              <div className="space-y-2 my-4">
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-20" />
+                  <Skeleton className="h-3 w-28" />
+                </div>
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-24" />
+                  <Skeleton className="h-3 w-32" />
+                </div>
+                <div className="flex justify-between">
+                  <Skeleton className="h-3 w-16" />
+                  <Skeleton className="h-3 w-10" />
+                </div>
+              </div>
+              <div className="border-t border-gray-50 pt-3 flex justify-between">
+                <Skeleton className="h-4 w-20" />
+                <Skeleton className="h-5 w-5 rounded-lg" />
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : filteredUsers.length > 0 ? (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredUsers.map((user) => (
             <UserCard 
-              key={user.id}
+              key={user.teacher_id}
               user={user}
               onSelect={handleSelectUser}
-              onDelete={handleDelete}
-              onChangeStatus={handleChangeStatus}
+              onDelete={handleDeleteClick}
+              onApprove={handleApproveClick}
+              onEdit={handleEditClick}
             />
           ))}
         </div>
@@ -186,13 +137,44 @@ const UserManagementPage = () => {
         </div>
       )}
 
-      {/* Details Modal overlay */}
+      {/* Details Modal */}
       <UserDetailsModal 
-        user={selectedUser}
+        teacherId={selectedTeacherId}
         isOpen={isDetailsOpen}
         onClose={() => {
           setIsDetailsOpen(false)
-          setSelectedUser(null)
+          setSelectedTeacherId(null)
+        }}
+        onEditClick={handleEditClick}
+      />
+
+      {/* Edit Modal */}
+      <UserEditModal 
+        user={editingUser}
+        isOpen={isEditOpen}
+        onClose={() => {
+          setIsEditOpen(false)
+          setEditingUser(null)
+        }}
+      />
+
+      {/* Delete Confirmation Modal */}
+      <UserDeleteModal 
+        teacherId={deleteTeacherId}
+        isOpen={isDeleteOpen}
+        onClose={() => {
+          setIsDeleteOpen(false)
+          setDeleteTeacherId(null)
+        }}
+      />
+
+      {/* Approve Confirmation Modal */}
+      <UserApproveModal 
+        teacherId={approveTeacherId}
+        isOpen={isApproveOpen}
+        onClose={() => {
+          setIsApproveOpen(false)
+          setApproveTeacherId(null)
         }}
       />
 

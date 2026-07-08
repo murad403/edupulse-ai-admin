@@ -24,3 +24,13 @@ export const reportSchema = z.object({
   temporalBounds: z.coerce.number({ error: 'Temporal Bounds must be a number.' }).int().min(1, { message: 'Must be at least 1.' })
 })
 export type TReportForm = z.infer<typeof reportSchema>
+
+export const editUserSchema = z.object({
+  firstName: z.string().min(1, { message: 'First name is required.' }),
+  lastName: z.string().min(1, { message: 'Last name is required.' }),
+  email: z.string().optional(),
+  schoolName: z.string().optional(),
+  grade: z.string().min(1, { message: 'Grade is required.' }),
+  room: z.string().optional()
+})
+export type TEditUserForm = z.infer<typeof editUserSchema>

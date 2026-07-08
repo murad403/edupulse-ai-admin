@@ -193,6 +193,44 @@ export interface UpdateAiConfigResponse {
   timestamp: string;
 }
 
+export interface TeacherItem {
+  teacher_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  school_name?: string | null;
+  grade: string;
+  room?: string | null;
+  approval_status: "approved" | "pending";
+  is_active: boolean;
+  profile_picture?: string | null;
+  created_at: string;
+}
+
+export interface GetTeachersData {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: TeacherItem[];
+}
+
+export interface GetTeachersResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: GetTeachersData;
+  timestamp: string;
+}
+
+export interface TeacherDetailsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: TeacherItem;
+  timestamp: string;
+}
+
+
 
 
 

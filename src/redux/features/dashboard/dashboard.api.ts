@@ -1,5 +1,5 @@
 import baseApi from "@/redux/api/api";
-import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse, UpdateAiConfigInput, UpdateAiConfigResponse } from "./dashboard.type";
+import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse, UpdateAiConfigInput, UpdateAiConfigResponse, GetTeachersResponse, TeacherDetailsResponse, TeacherItem } from "./dashboard.type";
 
 
 const dashboardApi = baseApi.injectEndpoints({
@@ -100,6 +100,55 @@ const dashboardApi = baseApi.injectEndpoints({
         };
       }
     }),
+
+
+    // user management********************************************************************
+    getUsers: builder.query<GetTeachersResponse, void>({
+      query: () => {
+        return {
+          url: "/admin/teachers",
+          method: "GET",
+        };
+      },
+      providesTags: ["Teachers"],
+    }),
+    getUserDetails: builder.query<TeacherItem, number>({
+      query: (teacher_id) => {
+        return {
+          url: `/admin/teachers/${teacher_id}/`,
+          method: "GET",
+        };
+      },
+      providesTags: ["Teachers"],
+    }),
+    updateUserDetails: builder.mutation<any, { teacher_id: number; data: FormData }>({
+      query: ({teacher_id, data}) => {
+        return {
+          url: `/admin/teachers/${teacher_id}/`,
+          method: "PATCH",
+          body: data
+        };
+      },
+      invalidatesTags: ["Teachers", "Stats"],
+    }),
+    deleteUser: builder.mutation<{ success: boolean; message: string }, number>({
+      query: (teacher_id) => {
+        return {
+          url: `/admin/teachers/${teacher_id}/`,
+          method: "DELETE"
+        };
+      },
+      invalidatesTags: ["Teachers", "Stats"],
+    }),
+    approvedUser: builder.mutation({
+      query: (teacher_id) => {
+        return {
+          url: `/admin/teachers/${teacher_id}/approve`,
+          method: "POST"
+        };
+      },
+      invalidatesTags: ["Teachers", "Stats"],
+    }),
   }),
 });
 
@@ -114,4 +163,9 @@ export const {
   useGenerateReportMutation,
   useGetSchoolAndClassDetailsQuery,
   useUpdateAiConfigMutation,
+  useGetUsersQuery,
+  useGetUserDetailsQuery,
+  useUpdateUserDetailsMutation,
+  useDeleteUserMutation,
+  useApprovedUserMutation,
 } = dashboardApi;
