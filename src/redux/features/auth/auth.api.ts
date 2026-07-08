@@ -1,12 +1,14 @@
 import baseApi from "@/redux/api/api";
+import { SignInResponse } from "./auth.type";
+import { SignInInput } from "@/validation/auth.validation";
 
 
 const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        signIn: builder.mutation({
+        signIn: builder.mutation<SignInResponse, SignInInput>({
             query: (data) => {
                 return {
-                    url: "/auth/login",
+                    url: "/admin/login",
                     method: "POST",
                     body: data
                 }
@@ -16,4 +18,5 @@ const authApi = baseApi.injectEndpoints({
 })
 
 export const {
+    useSignInMutation
 } = authApi;

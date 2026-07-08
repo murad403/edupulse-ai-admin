@@ -1,6 +1,4 @@
 'use client'
-
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
@@ -10,31 +8,46 @@ import { signInSchema, SignInInput } from '@/validation/auth.validation'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Button } from '@/components/ui/button'
+import { useSignInMutation } from '@/redux/features/auth/auth.api'
+import { saveToken } from '@/lib/auth'
+import { toast } from 'sonner'
+
+
 
 const SignInPage = () => {
   const router = useRouter()
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting }
-  } = useForm<SignInInput>({
+  const [signIn, { isLoading }] = useSignInMutation()
+
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
-      email: '',
-      password: ''
+      email: 'admin44@gmail.com',
+      password: '1234'
     }
   })
 
   const onSubmit = async (data: SignInInput) => {
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 800))
-    console.log('Signed in successfully:', data)
-    router.push('/')
+    const toastId = toast.loading('Verifying credentials...')
+    try {
+      const response = await signIn(data).unwrap()
+      if (response?.data?.access && response?.data?.refresh) {
+        await saveToken(response.data.access, response.data.refresh)
+        toast.success(response.message || 'Admin login successful.', { id: toastId })
+        router.push('/')
+      } else {
+        const errMsg = 'Authentication failed: Missing tokens.'
+        toast.error(errMsg, { id: toastId })
+      }
+    } catch (err: any) {
+      console.error('Sign-in error:', err)
+      const message = err?.data?.message || err?.message || 'Something went wrong. Please try again.'
+      toast.error(message, { id: toastId })
+    }
   }
 
   return (
     <div className="w-full max-w-md mx-auto rounded-2xl border border-gray-100 bg-white p-8 shadow-xl text-center animate-in fade-in duration-300">
-    
+
 
       {/* Subtitles */}
       <h2 className="text-xl font-extrabold text-title">Sign In to Console</h2>
@@ -44,13 +57,13 @@ const SignInPage = () => {
 
       {/* Form */}
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 text-left">
-        
+
         {/* Email */}
         <div className="space-y-1.5">
           <Label className="text-sm font-extrabold text-title">Email Address</Label>
           <div className="relative w-full">
             <Mail className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-            <Input 
+            <Input
               type="email"
               placeholder="e.g. alex.mercer@edupulse.ai"
               {...register('email')}
@@ -68,17 +81,17 @@ const SignInPage = () => {
         <div className="space-y-1.5">
           <div className="flex items-center justify-between">
             <Label className="text-sm font-extrabold text-title">Password</Label>
-            <Link 
+            <Link
               href="/auth/forgot-password"
               className="text-xs font-extrabold text-main hover:text-main-dark transition-colors"
             >
               Forgot password?
             </Link>
           </div>
-          
+
           <div className="relative w-full">
             <Lock className="absolute left-3.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-gray-400" />
-            <Input 
+            <Input
               type="password"
               placeholder="••••••••"
               {...register('password')}
@@ -94,12 +107,12 @@ const SignInPage = () => {
 
         {/* Submit */}
         <div className="pt-2">
-          <Button 
+          <Button
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || isLoading}
             className="w-full h-11 justify-center bg-main hover:bg-main-dark text-white text-sm font-bold shadow-md shadow-orange-500/10 rounded-xl cursor-pointer"
           >
-            {isSubmitting ? 'Verifying Credentials...' : 'Sign In'}
+            {isSubmitting || isLoading ? 'Verifying Credentials...' : 'Sign In'}
           </Button>
         </div>
 

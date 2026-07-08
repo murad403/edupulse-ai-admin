@@ -1,9 +1,11 @@
 'use client'
 
 import React, { useState } from 'react'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { Bell, Search, Menu, Layout, Settings, LogOut } from 'lucide-react'
+import { removeToken } from '@/lib/auth'
+import { toast } from 'sonner'
 
 interface AdminTopbarProps {
   onMenuClick?: () => void
@@ -11,6 +13,7 @@ interface AdminTopbarProps {
 
 const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
   const pathname = usePathname()
+  const router = useRouter()
 
   const getTabName = () => {
     if (pathname === '/user-management') return 'User Management'
@@ -24,6 +27,20 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
   }
 
   const [dropdownOpen, setDropdownOpen] = useState(false)
+
+  const handleLogout = async (e: React.MouseEvent) => {
+    e.preventDefault()
+    setDropdownOpen(false)
+    const toastId = toast.loading('Logging out...')
+    try {
+      await removeToken()
+      toast.success('Logged out successfully.', { id: toastId })
+      router.push('/auth/sign-in')
+    } catch (err) {
+      console.error('Logout error:', err)
+      toast.error('Failed to logout. Please try again.', { id: toastId })
+    }
+  }
 
   return (
     <header className="sticky top-0 z-20 flex h-16 w-full items-center justify-between border-b border-gray-100 bg-white/80 px-4 md:px-6 backdrop-blur-md">
@@ -101,14 +118,13 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
                 <span>Settings</span>
               </Link>
               
-              <Link 
-                href="/auth/sign-in"
-                onClick={() => setDropdownOpen(false)}
-                className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50/50 transition-colors w-full border-t border-gray-50"
+              <button 
+                onClick={handleLogout}
+                className="flex items-center gap-2 px-4 py-2.5 text-xs font-semibold text-red-500 hover:text-red-700 hover:bg-red-50/50 transition-colors w-full border-t border-gray-50 cursor-pointer"
               >
                 <LogOut className="h-4 w-4 text-red-400" />
                 <span>Logout</span>
-              </Link>
+              </button>
             </div>
           )}
         </div>
