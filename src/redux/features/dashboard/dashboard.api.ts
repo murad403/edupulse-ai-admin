@@ -91,6 +91,15 @@ const dashboardApi = baseApi.injectEndpoints({
         };
       }
     }),
+    updateAiConfig: builder.mutation({
+      query: (data) => {
+        return {
+          url: "/admin/ai-config",
+          method: "POST",
+          body: data
+        };
+      }
+    }),
   }),
 });
 

@@ -1,8 +1,8 @@
 'use client'
-
 import React, { useState } from 'react'
 import { Sliders, Shield, Brain } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
 
 const AiConfigurationPage = () => {
   const [temperature, setTemperature] = useState(0.47)
@@ -15,13 +15,13 @@ const AiConfigurationPage = () => {
 
   return (
     <div className="flex flex-col lg:flex-row gap-6 w-full animate-in fade-in duration-300">
-      
+
       {/* Left Hyperparameters & Models Section */}
       <div className="flex-1 space-y-6">
-        
+
         {/* AI Engine Hyperparameters Card */}
         <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm space-y-6 text-left">
-          
+
           {/* Header */}
           <div className="flex items-start gap-3.5 border-b border-gray-50 pb-4">
             <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
@@ -48,11 +48,11 @@ const AiConfigurationPage = () => {
             <p className="text-[11px] font-semibold text-gray-400 leading-normal">
               Lower temperatures focus output on specific state curriculum standards, while higher levels provoke broad interdisciplinary insights.
             </p>
-            <input 
-              type="range" 
-              min="0.0" 
-              max="1.0" 
-              step="0.01" 
+            <input
+              type="range"
+              min="0.0"
+              max="1.0"
+              step="0.01"
               value={temperature}
               onChange={(e) => setTemperature(parseFloat(e.target.value))}
               className="accent-main w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-1"
@@ -69,11 +69,11 @@ const AiConfigurationPage = () => {
                 {maxTokens} / hour limit
               </span>
             </div>
-            <input 
-              type="range" 
-              min="1000" 
-              max="8000" 
-              step="10" 
+            <input
+              type="range"
+              min="1000"
+              max="8000"
+              step="10"
               value={maxTokens}
               onChange={(e) => setMaxTokens(parseInt(e.target.value))}
               className="accent-main w-full h-1 bg-gray-200 rounded-lg appearance-none cursor-pointer mt-1"
@@ -87,16 +87,16 @@ const AiConfigurationPage = () => {
           <span className="text-[10px] font-extrabold text-gray-400 uppercase tracking-widest block leading-none">
             MODEL SELECTION
           </span>
-          
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            
+
             {/* GPT-4o mini */}
-            <div 
+            <div
               onClick={() => setSelectedModel('gpt-4o-mini')}
               className={cn(
                 "rounded-xl border p-4 bg-white shadow-xs cursor-pointer transition-all duration-200 select-none flex flex-col justify-between h-[120px]",
-                selectedModel === 'gpt-4o-mini' 
-                  ? "border-main ring-2 ring-main/10" 
+                selectedModel === 'gpt-4o-mini'
+                  ? "border-main ring-2 ring-main/10"
                   : "border-gray-100 hover:border-gray-300"
               )}
             >
@@ -112,12 +112,12 @@ const AiConfigurationPage = () => {
             </div>
 
             {/* GPT-4o */}
-            <div 
+            <div
               onClick={() => setSelectedModel('gpt-4o')}
               className={cn(
                 "rounded-xl border p-4 bg-white shadow-xs cursor-pointer transition-all duration-200 select-none flex flex-col justify-between h-[120px]",
-                selectedModel === 'gpt-4o' 
-                  ? "border-main ring-2 ring-main/10" 
+                selectedModel === 'gpt-4o'
+                  ? "border-main ring-2 ring-main/10"
                   : "border-gray-100 hover:border-gray-300"
               )}
             >
@@ -139,7 +139,7 @@ const AiConfigurationPage = () => {
 
       {/* Right Controls Panel */}
       <div className="w-full lg:w-[320px] shrink-0 space-y-6">
-        
+
         {/* Socratic Safeguards Card */}
         <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm space-y-4 text-left">
           <div className="flex items-center gap-2 text-slate-800 font-bold text-sm">
@@ -149,13 +149,13 @@ const AiConfigurationPage = () => {
           <p className="text-[11px] font-semibold text-gray-400 leading-relaxed">
             Forces the AI to outline answers through scaffolded steps rather than outright solving homework for students.
           </p>
-          
-          <div 
+
+          <div
             onClick={() => setGuardrailsEnabled(!guardrailsEnabled)}
             className="flex items-center justify-between pt-2 border-t border-gray-50 cursor-pointer select-none"
           >
             <span className="text-xs font-bold text-slate-700">Socratic Guard-rails</span>
-            
+
             {/* Toggle Switch */}
             <div className={cn(
               "w-9 h-5 rounded-full p-0.5 transition-colors duration-200 ease-in-out shrink-0",
@@ -177,7 +177,7 @@ const AiConfigurationPage = () => {
               COGNITIVE PROMPT OVERLAY
             </span>
           </div>
-          
+
           <div className="space-y-2">
             <h4 className="text-xs font-bold text-title">Universal Appended Instructions</h4>
             <textarea

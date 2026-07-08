@@ -77,12 +77,6 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
           <Search className="h-4 w-4" />
         </button>
 
-        {/* Notifications */}
-        <button className="relative flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors cursor-pointer">
-          <Bell className="h-4.5 w-4.5" />
-          <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white" />
-        </button>
-
         {/* Avatar Dropdown Wrapper */}
         <div className="relative">
           <button 
