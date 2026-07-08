@@ -1,7 +1,6 @@
 import baseApi from "@/redux/api/api";
-import { SignInResponse } from "./auth.type";
+import { SignInResponse, ProfileResponse } from "./auth.type";
 import { SignInInput } from "@/validation/auth.validation";
-
 
 const authApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
@@ -13,10 +12,31 @@ const authApi = baseApi.injectEndpoints({
                     body: data
                 }
             }
-        })
+        }),
+        getProfile: builder.query<ProfileResponse, void>({
+            query: () => {
+                return {
+                    url: "/auth/me",
+                    method: "GET"
+                }
+            },
+            providesTags: ["Profile"],
+        }),
+        updateProfile: builder.mutation<ProfileResponse, FormData>({
+            query: (formData) => {
+                return {
+                    url: "/auth/me",
+                    method: "PATCH",
+                    body: formData,
+                }
+            },
+            invalidatesTags: ["Profile"],
+        }),
     })
 })
 
 export const {
-    useSignInMutation
+    useSignInMutation,
+    useGetProfileQuery,
+    useUpdateProfileMutation,
 } = authApi;

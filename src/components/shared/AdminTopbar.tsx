@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Bell, Search, Menu, Layout, Settings, LogOut } from 'lucide-react'
 import { removeToken } from '@/lib/auth'
 import { toast } from 'sonner'
+import { useGetProfileQuery } from '@/redux/features/auth/auth.api'
 
 interface AdminTopbarProps {
   onMenuClick?: () => void
@@ -14,6 +15,12 @@ interface AdminTopbarProps {
 const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
   const pathname = usePathname()
   const router = useRouter()
+  const { data: profileResponse } = useGetProfileQuery()
+
+  const profile = profileResponse?.data
+  const firstName = profile?.first_name || 'Admin'
+  const lastName = profile?.last_name || 'User'
+  const avatarUrl = profile?.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + ' ' + lastName)}&background=F97316&color=fff`
 
   const getTabName = () => {
     if (pathname === '/user-management') return 'User Management'
@@ -63,18 +70,6 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
         </div>
       </div>
 
-      {/* Middle side: Search input */}
-      <div className="hidden md:flex flex-1 max-w-sm mx-8">
-        <div className="relative w-full">
-          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
-          <input 
-            type="text" 
-            placeholder="Search..."
-            className="w-full rounded-full border border-gray-100 bg-gray-50 py-1.5 pl-9 pr-4 text-xs text-gray-700 placeholder:text-gray-400 focus:border-main/30 focus:bg-white focus:outline-none focus:ring-2 focus:ring-main/20 transition-all duration-200"
-          />
-        </div>
-      </div>
-
       {/* Right side: Notifications & Avatar */}
       <div className="flex items-center gap-4">
         {/* Search button for mobile only */}
@@ -95,8 +90,8 @@ const AdminTopbar = ({ onMenuClick }: AdminTopbarProps) => {
             className="h-9 w-9 overflow-hidden rounded-full border border-gray-200 shadow-sm cursor-pointer hover:border-main transition-colors focus:outline-none focus:ring-2 focus:ring-main/20 flex"
           >
             <img 
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80" 
-              alt="Alex Mercer"
+              src={avatarUrl} 
+              alt={`${firstName} ${lastName}`}
               className="h-full w-full object-cover"
             />
           </button>

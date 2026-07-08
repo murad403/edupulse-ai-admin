@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { LayoutDashboard, Users, School, Compass, Sliders, FileBarChart, LayoutGrid, Clock, Settings, ChevronLeft, ChevronRight, X } from 'lucide-react'
+import { useGetProfileQuery } from '@/redux/features/auth/auth.api'
 
 interface AdminSidebarProps {
   isCollapsed: boolean
@@ -15,6 +16,12 @@ interface AdminSidebarProps {
 
 const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOpen }: AdminSidebarProps) => {
   const pathname = usePathname()
+  const { data: profileResponse } = useGetProfileQuery()
+
+  const profile = profileResponse?.data
+  const firstName = profile?.first_name || 'Admin'
+  const lastName = profile?.last_name || 'User'
+  const avatarUrl = profile?.profile_picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(firstName + ' ' + lastName)}&background=F97316&color=fff`
 
   const navItems = [
     { name: 'Overview', href: '/', icon: LayoutDashboard },
@@ -121,12 +128,12 @@ const AdminSidebar = ({ isCollapsed, setIsCollapsed, isMobileOpen, setIsMobileOp
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-3 overflow-hidden">
             <img
-              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-              alt="Alex Mercer"
+              src={avatarUrl}
+              alt={`${firstName} ${lastName}`}
               className="h-9 w-9 shrink-0 rounded-full border border-gray-200 object-cover"
             />
             <div className={cn("flex flex-col overflow-hidden text-left transition-all duration-300", isCollapsed ? "lg:opacity-0 lg:w-0" : "opacity-100")}>
-              <span className="text-xs font-bold text-gray-800 truncate leading-tight whitespace-nowrap">Alex Mercer</span>
+              <span className="text-xs font-bold text-gray-800 truncate leading-tight whitespace-nowrap">{firstName} {lastName}</span>
               <span className="text-[10px] text-gray-500 truncate leading-none whitespace-nowrap">Super Administrator</span>
             </div>
           </div>
