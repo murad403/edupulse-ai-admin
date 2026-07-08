@@ -172,5 +172,27 @@ export interface SchoolDetailsResponse {
   timestamp: string;
 }
 
+export interface UpdateAiConfigInput {
+  ai_model: string;
+  temperature: number;
+  max_tokens: number;
+}
+
+export interface UpdateAiConfigData {
+  temperature: number;
+  max_tokens: number;
+  ai_model: string;
+  updated_at: string;
+}
+
+export interface UpdateAiConfigResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: UpdateAiConfigData;
+  timestamp: string;
+}
+
+
 
 
