@@ -1,14 +1,17 @@
 'use client'
-
-import React from 'react'
-import { Users, School, Zap, ShieldCheck } from 'lucide-react'
+import { Users, School, Zap } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
+import { useGetDashboardStatsQuery } from '@/redux/features/dashboard/dashboard.api'
+import { Skeleton } from '@/components/ui/skeleton'
+
 const OverviewStats = () => {
+  const { data, isLoading } = useGetDashboardStatsQuery()
+
   const stats = [
     {
       title: 'Total Teachers',
-      value: '142',
+      value: data?.data?.total_teachers,
       icon: Users,
       iconColor: 'text-main',
       iconBg: 'bg-orange-50',
@@ -16,7 +19,7 @@ const OverviewStats = () => {
     },
     {
       title: 'Active Schools',
-      value: '11',
+      value: data?.data?.active_schools,
       icon: School,
       iconColor: 'text-main',
       iconBg: 'bg-orange-50',
@@ -24,7 +27,7 @@ const OverviewStats = () => {
     },
     {
       title: 'AI Requests Today',
-      value: '3,840',
+      value: data?.data?.today_ai_requests,
       icon: Zap,
       iconColor: 'text-main',
       iconBg: 'bg-orange-50',
@@ -44,7 +47,11 @@ const OverviewStats = () => {
             <div className="flex flex-col gap-2">
               <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">{stat.title}</span>
               <span className={cn("text-3xl font-extrabold tracking-tight", stat.valueColor)}>
-                {stat.value}
+                {isLoading ? (
+                  <Skeleton className="h-9 w-20" />
+                ) : (
+                  (stat.value ?? 0).toLocaleString()
+                )}
               </span>
             </div>
             

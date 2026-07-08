@@ -4,17 +4,55 @@ import React from 'react'
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
 import { TrendingUp } from 'lucide-react'
 
-const data = [
-  { day: 'Mon', requests: 2760 },
-  { day: 'Tue', requests: 3200 },
-  { day: 'Wed', requests: 4280 },
-  { day: 'Thu', requests: 3900 },
-  { day: 'Fri', requests: 4800 },
-  { day: 'Sat', requests: 2400 },
-  { day: 'Sun', requests: 4000 },
-]
+import { useGetPlatformUsageQuery } from '@/redux/features/dashboard/dashboard.api'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const PlatformUsageChart = () => {
+  const { data, isLoading } = useGetPlatformUsageQuery()
+
+  if (isLoading) {
+    return (
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-[420px]">
+        <div className="flex items-center justify-between mb-6">
+          <Skeleton className="h-5 w-32" />
+        </div>
+        <div className="flex-1 w-full min-h-[260px] flex items-end gap-4 px-2 pb-4">
+          <Skeleton className="h-[20%] flex-1" />
+          <Skeleton className="h-[40%] flex-1" />
+          <Skeleton className="h-[60%] flex-1" />
+          <Skeleton className="h-[50%] flex-1" />
+          <Skeleton className="h-[80%] flex-1" />
+          <Skeleton className="h-[30%] flex-1" />
+          <Skeleton className="h-[70%] flex-1" />
+        </div>
+        <div className="flex flex-col sm:flex-row items-center justify-between border-t border-gray-50 pt-4 mt-2 gap-2">
+          <Skeleton className="h-4 w-40" />
+          <Skeleton className="h-4 w-28" />
+        </div>
+      </div>
+    )
+  }
+
+  const chartData = data?.data?.map(item => ({
+    day: item.day.substring(0, 3),
+    requests: item.requests
+  })) || []
+
+  const maxRequests = data?.data?.reduce((max, item) => item.requests > max ? item.requests : max, 0) || 0
+  const maxRequestItem = data?.data && data.data.length > 0
+    ? data.data.reduce((max, item) => item.requests >= max.requests ? item : max, data.data[0])
+    : null
+
+  // Ensure nice scale ticks even if all requests are 0
+  const computedMax = maxRequests > 0 ? Math.ceil((maxRequests * 1.15) / 100) * 100 : 1000
+  const computedTicks = [
+    0,
+    Math.round(computedMax * 0.25),
+    Math.round(computedMax * 0.5),
+    Math.round(computedMax * 0.75),
+    computedMax
+  ]
+
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-[420px]">
       {/* Chart Header */}
@@ -23,11 +61,12 @@ const PlatformUsageChart = () => {
       </div>
 
       {/* Chart Canvas */}
-      <div className="flex-1 w-full min-h-[260px]">
+      <div className="flex-1 w-full min-h-[260px] outline-none focus:outline-none **:outline-none **:focus:outline-none">
         <ResponsiveContainer width="100%" height="100%">
           <AreaChart
-            data={data}
+            data={chartData}
             margin={{ top: 10, right: 10, left: -20, bottom: 0 }}
+            style={{ outline: 'none' }}
           >
             <defs>
               <linearGradient id="colorRequests" x1="0" y1="0" x2="0" y2="1">
@@ -48,8 +87,8 @@ const PlatformUsageChart = () => {
               dy={10}
             />
             <YAxis 
-              domain={[0, 5520]}
-              ticks={[0, 1380, 2760, 4140, 5520]}
+              domain={[0, computedMax]}
+              ticks={computedTicks}
               axisLine={false}
               tickLine={false}
               tick={{ fill: '#94A3B8', fontSize: 11, fontWeight: 500 }}
@@ -88,7 +127,7 @@ const PlatformUsageChart = () => {
           <span>Daily API Cognitive Requests</span>
         </div>
         <div className="text-gray-400 font-medium">
-          Updated Real-time - Peak: 4,800 (Fri)
+          Updated Real-time - Peak: {maxRequestItem ? `${maxRequestItem.requests.toLocaleString()} (${maxRequestItem.day.substring(0, 3)})` : '0 (N/A)'}
         </div>
       </div>
     </div>

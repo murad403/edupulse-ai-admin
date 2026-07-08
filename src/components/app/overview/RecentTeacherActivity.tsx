@@ -1,47 +1,37 @@
 'use client'
 import { cn } from '@/lib/utils'
 
-interface Teacher {
-  name: string;
-  avatar: string;
-  school: string;
-  status: 'ACTIVE' | 'INACTIVE';
-}
-
-const teachers: Teacher[] = [
-  {
-    name: 'Sarah Jenkins',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    school: 'Oakwood High School',
-    status: 'ACTIVE'
-  },
-  {
-    name: 'Marcus Chen',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    school: 'Lincoln Magnet Academy',
-    status: 'ACTIVE'
-  },
-  {
-    name: 'Elena Rostova',
-    avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    school: 'Riverdale STEM Charter',
-    status: 'INACTIVE'
-  },
-  {
-    name: 'David Kojo',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    school: 'Metropolitan Tech High',
-    status: 'ACTIVE'
-  },
-  {
-    name: 'Amina Al-Jamil',
-    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    school: 'Heights Elementary',
-    status: 'INACTIVE'
-  }
-]
+import { useGetTeachersActivityQuery } from '@/redux/features/dashboard/dashboard.api'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const RecentTeacherActivity = () => {
+  const { data, isLoading } = useGetTeachersActivityQuery()
+
+  if (isLoading) {
+    return (
+      <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-[420px]">
+        <h3 className="text-base font-bold text-title mb-4">Recent Teacher Activity</h3>
+        <div className="flex-1 overflow-hidden">
+          <div className="space-y-4">
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="flex items-center justify-between py-2 border-b border-gray-50/50">
+                <div className="flex items-center gap-2.5">
+                  <Skeleton className="h-6 w-6 rounded-full" />
+                  <Skeleton className="h-4 w-20" />
+                </div>
+                <Skeleton className="h-4 w-28" />
+                <Skeleton className="h-4 w-12 rounded-full" />
+              </div>
+            ))}
+          </div>
+        </div>
+        <Skeleton className="h-9.5 w-full rounded-lg mt-4" />
+      </div>
+    )
+  }
+
+  const activities = data?.data?.results || []
+
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm hover:shadow-md transition-shadow duration-200 flex flex-col h-[420px]">
       <h3 className="text-base font-bold text-title mb-4">Recent Teacher Activity</h3>
@@ -57,29 +47,42 @@ const RecentTeacherActivity = () => {
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-50">
-            {teachers.map((teacher, index) => (
-              <tr key={index} className="text-xs text-slate-700 hover:bg-gray-50/50 transition-colors">
-                <td className="py-2.5 flex items-center gap-2.5 font-bold text-title">
-                  <img 
-                    src={teacher.avatar} 
-                    alt={teacher.name} 
-                    className="h-6 w-6 rounded-full object-cover border border-gray-100"
-                  />
-                  <span>{teacher.name}</span>
-                </td>
-                <td className="py-2.5 text-gray-500 font-semibold">{teacher.school}</td>
-                <td className="py-2.5 text-right">
-                  <span className={cn(
-                    "inline-flex rounded-full px-2 py-0.5 text-[9px] font-extrabold tracking-wide uppercase",
-                    teacher.status === 'ACTIVE' 
-                      ? "bg-emerald-50 text-emerald-600" 
-                      : "bg-gray-100 text-gray-400"
-                  )}>
-                    {teacher.status}
-                  </span>
+            {activities.length > 0 ? (
+              activities.map((activity) => {
+                const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(activity.teacher_name)}&background=F97316&color=fff`
+                return (
+                  <tr key={activity.teacher_id} className="text-xs text-slate-700 hover:bg-gray-50/50 transition-colors">
+                    <td className="py-2.5 flex items-center gap-2.5 font-bold text-title">
+                      <img 
+                        src={avatarUrl} 
+                        alt={activity.teacher_name} 
+                        className="h-6 w-6 rounded-full object-cover border border-gray-100"
+                      />
+                      <span>{activity.teacher_name}</span>
+                    </td>
+                    <td className="py-2.5 text-gray-500 font-semibold">{activity.school_name || 'N/A'}</td>
+                    <td className="py-2.5 text-right">
+                      <span className={cn(
+                        "inline-flex rounded-full px-2 py-0.5 text-[9px] font-extrabold tracking-wide uppercase",
+                        activity.status === 'approved' 
+                          ? "bg-emerald-50 text-emerald-600" 
+                          : activity.status === 'pending'
+                          ? "bg-amber-50 text-amber-600"
+                          : "bg-gray-100 text-gray-400"
+                      )}>
+                        {activity.status}
+                      </span>
+                    </td>
+                  </tr>
+                )
+              })
+            ) : (
+              <tr>
+                <td colSpan={3} className="py-10 text-center text-xs text-gray-400 font-medium">
+                  No recent activities found.
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
