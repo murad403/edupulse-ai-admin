@@ -1,21 +1,15 @@
 'use client'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useAddSchoolMutation } from '@/redux/features/dashboard/dashboard.api'
+import { toast } from 'sonner'
+import { schoolSchema, TSchoolForm } from '@/validation/all.validation'
 
-const schema = z.object({
-  schoolName: z.string().min(2, { message: 'School name must be at least 2 characters.' }),
-  region: z.string().min(2, { message: 'Region / District Office is required.' }),
-  teachersCount: z.coerce.number({ error: 'Please enter a number.' }).int().min(0, { message: 'Must be a positive integer.' }),
-  studentsCount: z.coerce.number({ error: 'Please enter a number.' }).int().min(0, { message: 'Must be a positive integer.' }),
-  status: z.enum(['ACTIVE', 'INACTIVE'])
-})
 
-type FormData = z.infer<typeof schema>
 
 interface AddSchoolModalProps {
   isOpen: boolean
@@ -23,27 +17,34 @@ interface AddSchoolModalProps {
 }
 
 const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
-  const { register, handleSubmit, setValue, watch, reset, formState: { errors, isSubmitting } } = useForm<FormData>({
-    resolver: zodResolver(schema) as any,
+  const [addSchool] = useAddSchoolMutation()
+
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm<TSchoolForm>({
+    resolver: zodResolver(schoolSchema),
     defaultValues: {
       schoolName: '',
-      region: '',
-      teachersCount: undefined,
-      studentsCount: undefined,
-      status: 'ACTIVE'
+      region: ''
     }
   })
 
-  const currentStatus = watch('status')
-
   if (!isOpen) return null
 
-  const onSubmit = async (data: FormData) => {
-    // Simulate API call
-    console.log('School submitted: ', data)
-    alert(`Success! Registered school: ${data.schoolName}`)
-    reset()
-    onClose()
+  const onSubmit = async (data: TSchoolForm) => {
+    const toastId = toast.loading('Registering school profile...')
+    try {
+      await addSchool({
+        school_name: data.schoolName,
+        region_district_office: data.region,
+        registration_status: 'Active'
+      }).unwrap()
+      toast.success('School profile registered successfully!', { id: toastId })
+      reset()
+      onClose()
+    } catch (err: any) {
+      // console.error(err)
+      const errMsg = err?.data?.message || 'Failed to register school profile.'
+      toast.error(errMsg, { id: toastId })
+    }
   }
 
   return (
@@ -92,59 +93,13 @@ const AddSchoolModal = ({ isOpen, onClose }: AddSchoolModalProps) => {
             )}
           </div>
 
-          {/* Teachers & Students Counts Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div className="flex flex-col">
-              <Label htmlFor="teachersCount">Teachers Count</Label>
-              <Input
-                id="teachersCount"
-                type="number"
-                placeholder="15"
-                {...register('teachersCount')}
-              />
-              {errors.teachersCount && (
-                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.teachersCount.message}</span>
-              )}
-            </div>
-
-            <div className="flex flex-col">
-              <Label htmlFor="studentsCount">Students Count</Label>
-              <Input
-                id="studentsCount"
-                type="number"
-                placeholder="250"
-                {...register('studentsCount')}
-              />
-              {errors.studentsCount && (
-                <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.studentsCount.message}</span>
-              )}
-            </div>
-          </div>
-
-          {/* Registration Status Selector */}
+          {/* Registration Status */}
           <div className="flex flex-col">
             <Label>Registration Status</Label>
-            <div className="flex items-center gap-6 mt-1">
-              <button
-                type="button"
-                onClick={() => setValue('status', 'ACTIVE')}
-                className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${currentStatus === 'ACTIVE'
-                    ? 'border-main text-title font-extrabold'
-                    : 'border-transparent text-gray-400 hover:text-gray-600'
-                  }`}
-              >
+            <div className="mt-1.5">
+              <span className="inline-flex items-center rounded-full bg-emerald-50 px-3 py-0.5 text-[9px] font-extrabold tracking-wide uppercase text-emerald-600">
                 Active
-              </button>
-              <button
-                type="button"
-                onClick={() => setValue('status', 'INACTIVE')}
-                className={`text-sm font-bold pb-1 border-b-2 transition-all cursor-pointer ${currentStatus === 'INACTIVE'
-                    ? 'border-main text-title font-extrabold'
-                    : 'border-transparent text-gray-400 hover:text-gray-600'
-                  }`}
-              >
-                Inactive
-              </button>
+              </span>
             </div>
           </div>
 

@@ -4,6 +4,11 @@ import {
   PlatformUsageResponse,
   TeacherActivityResponse,
   TopSchoolsResponse,
+  AddSchoolInput,
+  AddSchoolResponse,
+  GetSchoolsResponse,
+  AddTeacherInput,
+  AddTeacherResponse,
 } from "./dashboard.type";
 
 const dashboardApi = baseApi.injectEndpoints({
@@ -16,6 +21,7 @@ const dashboardApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Stats"],
     }),
     getPlatformUsage: builder.query<PlatformUsageResponse, void>({
       query: () => {
@@ -32,6 +38,7 @@ const dashboardApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Schools"],
     }),
     getTeachersActivity: builder.query<TeacherActivityResponse, void>({
       query: () => {
@@ -40,6 +47,40 @@ const dashboardApi = baseApi.injectEndpoints({
           method: "GET",
         };
       },
+      providesTags: ["Teachers"],
+    }),
+
+    // school************************************************************************
+    addSchool: builder.mutation<AddSchoolResponse, AddSchoolInput>({
+      query: (data) => {
+        return {
+          url: "/admin/schools",
+          method: "POST",
+          body: data
+        };
+      },
+      invalidatesTags: ["Stats", "Schools"],
+    }),
+    getSchools: builder.query<GetSchoolsResponse, void>({
+      query: () => {
+        return {
+          url: "/admin/schools",
+          method: "GET"
+        };
+      },
+      providesTags: ["Schools"],
+    }),
+
+    // teacher************************************************************************
+    addTeacher: builder.mutation<AddTeacherResponse, AddTeacherInput>({
+      query: (data) => {
+        return {
+          url: "/admin/teachers",
+          method: "POST",
+          body: data
+        };
+      },
+      invalidatesTags: ["Stats", "Schools", "Teachers"],
     }),
   }),
 });
@@ -49,4 +90,7 @@ export const {
   useGetPlatformUsageQuery,
   useGetTopSchoolsQuery,
   useGetTeachersActivityQuery,
+  useAddSchoolMutation,
+  useGetSchoolsQuery,
+  useAddTeacherMutation,
 } = dashboardApi;

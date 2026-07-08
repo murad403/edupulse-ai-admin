@@ -66,3 +66,82 @@ export interface TeacherActivityResponse {
   data: TeacherActivityData;
   timestamp: string;
 }
+
+export interface AddSchoolInput {
+  school_name: string;
+  region_district_office: string;
+  registration_status: "Active";
+}
+
+export interface AddSchoolData {
+  school_id: number;
+  school_name: string;
+  region_district_office: string;
+  registration_status: string;
+  created_at: string;
+}
+
+export interface AddSchoolResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: AddSchoolData;
+  timestamp: string;
+}
+
+export interface SchoolItem {
+  school_id: number;
+  school_name: string;
+  region_district_office: string;
+  registration_status: string;
+  total_teachers: number;
+  total_students: number;
+  total_ai_requests: number;
+}
+
+export interface GetSchoolsData {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: SchoolItem[];
+}
+
+export interface GetSchoolsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: GetSchoolsData;
+  timestamp: string;
+}
+
+export interface AddTeacherInput {
+  first_name: string;
+  last_name: string;
+  email: string;
+  password: string;
+  school_id: number;
+  grade: string;
+  approval_status: "approved" | "pending";
+}
+
+export interface AddTeacherData {
+  teacher_id: number;
+  first_name: string;
+  last_name: string;
+  email: string;
+  school_name: string;
+  grade: string;
+  room: string | null;
+  approval_status: string;
+  is_active: boolean;
+  created_at: string;
+}
+
+export interface AddTeacherResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: AddTeacherData;
+  timestamp: string;
+}
+
