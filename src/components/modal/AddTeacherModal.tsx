@@ -2,7 +2,7 @@
 import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { X } from 'lucide-react'
+import { X, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -19,6 +19,7 @@ interface AddTeacherModalProps {
 const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
   const [addTeacher] = useAddTeacherMutation()
   const { data: schoolsData, isLoading: isLoadingSchools } = useGetSchoolsQuery()
+  const [showPassword, setShowPassword] = React.useState(false)
 
   const { register, handleSubmit, setValue, watch, reset, formState: { errors, isSubmitting } } = useForm<TTeacherForm>({
     resolver: zodResolver(teacherSchema),
@@ -128,12 +129,26 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
           {/* Password */}
           <div className="flex flex-col">
             <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              {...register('password')}
-            />
+            <div className="relative flex items-center mt-1">
+              <Input
+                id="password"
+                type={showPassword ? 'text' : 'password'}
+                placeholder="••••••••"
+                className="pr-10"
+                {...register('password')}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer"
+              >
+                {showPassword ? (
+                  <EyeOff className="h-4 w-4" />
+                ) : (
+                  <Eye className="h-4 w-4" />
+                )}
+              </button>
+            </div>
             {errors.password && (
               <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.password.message}</span>
             )}
@@ -144,7 +159,7 @@ const AddTeacherModal = ({ isOpen, onClose }: AddTeacherModalProps) => {
             <Label htmlFor="schoolId">School Affiliation</Label>
             <select
               id="schoolId"
-              className="flex h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-title placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-main/25 focus:border-main disabled:cursor-not-allowed disabled:opacity-50 transition-all duration-150"
+              className="block h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-title focus:outline-none focus:ring-2 focus:ring-main/25 focus:border-main disabled:cursor-not-allowed disabled:opacity-50"
               disabled={isLoadingSchools}
               {...register('schoolId')}
             >

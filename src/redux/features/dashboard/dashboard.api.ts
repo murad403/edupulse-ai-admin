@@ -1,15 +1,6 @@
 import baseApi from "@/redux/api/api";
-import {
-  DashboardStatsResponse,
-  PlatformUsageResponse,
-  TeacherActivityResponse,
-  TopSchoolsResponse,
-  AddSchoolInput,
-  AddSchoolResponse,
-  GetSchoolsResponse,
-  AddTeacherInput,
-  AddTeacherResponse,
-} from "./dashboard.type";
+import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, } from "./dashboard.type";
+
 
 const dashboardApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
