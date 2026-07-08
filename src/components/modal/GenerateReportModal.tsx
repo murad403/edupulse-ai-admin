@@ -1,21 +1,13 @@
 'use client'
-
-import React from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import * as z from 'zod'
 import { X } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-
-const schema = z.object({
-  analyticalFocus: z.string().min(2, { message: 'Analytical Focus is required.' }),
-  targetSchoolRange: z.string().min(2, { message: 'Target School Range is required.' }),
-  temporalBounds: z.string().min(2, { message: 'Temporal Bounds are required.' })
-})
-
-type FormData = z.infer<typeof schema>
+import { reportSchema, TReportForm } from '@/validation/all.validation'
+import { useGenerateReportMutation } from '@/redux/features/dashboard/dashboard.api'
+import { toast } from 'sonner'
 
 interface GenerateReportModalProps {
   isOpen: boolean
@@ -23,38 +15,45 @@ interface GenerateReportModalProps {
 }
 
 const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
-  const { 
-    register, 
-    handleSubmit, 
-    reset,
-    formState: { errors, isSubmitting } 
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  const [generateReport] = useGenerateReportMutation()
+
+  const { register, handleSubmit, reset, formState: { errors, isSubmitting }} = useForm<TReportForm>({
+    resolver: zodResolver(reportSchema) as any,
     defaultValues: {
       analyticalFocus: '',
-      targetSchoolRange: '',
-      temporalBounds: ''
+      targetSchoolRange: 0,
+      temporalBounds: 0
     }
   })
 
   if (!isOpen) return null
 
-  const onSubmit = async (data: FormData) => {
-    // Simulate API call
-    console.log('Report criteria: ', data)
-    alert(`Generating Report! Focus: ${data.analyticalFocus}`)
-    reset()
-    onClose()
+  const onSubmit = async (data: TReportForm) => {
+    const toastId = toast.loading('Compiling report criteria...')
+    try {
+      const response = await generateReport({
+        analyticalFocus: data.analyticalFocus,
+        targetSchoolRange: Number(data.targetSchoolRange),
+        temporalBounds: Number(data.temporalBounds)
+      }).unwrap()
+      toast.success(response.message || 'Report generated successfully!', { id: toastId })
+      reset()
+      onClose()
+    } catch (err: any) {
+      // console.error(err)
+      const errMsg = err?.data?.message || 'Failed to generate report.'
+      toast.error(errMsg, { id: toastId })
+    }
   }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-xs transition-opacity duration-200">
-      <div 
+      <div
         className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl border border-gray-100 relative animate-in fade-in zoom-in-95 duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
-        <button 
+        <button
           onClick={onClose}
           className="absolute right-4 top-4 text-gray-400 hover:text-gray-600 transition-colors cursor-pointer"
         >
@@ -66,13 +65,13 @@ const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
 
         {/* Modal Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-          
+
           {/* Analytical Focus */}
           <div className="flex flex-col">
             <Label htmlFor="analyticalFocus">Analytical Focus</Label>
-            <Input 
-              id="analyticalFocus" 
-              placeholder="e.g. Cognitive engagement metrics, prompt efficiency"
+            <Input
+              id="analyticalFocus"
+              placeholder="e.g. Platform Engagement, Cognitive engagement metrics"
               {...register('analyticalFocus')}
             />
             {errors.analyticalFocus && (
@@ -84,9 +83,10 @@ const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col">
               <Label htmlFor="targetSchoolRange">Target School Range</Label>
-              <Input 
-                id="targetSchoolRange" 
-                placeholder="e.g. All District Affiliates, High Schools"
+              <Input
+                id="targetSchoolRange"
+                type="number"
+                placeholder="e.g. 1"
                 {...register('targetSchoolRange')}
               />
               {errors.targetSchoolRange && (
@@ -95,10 +95,11 @@ const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
             </div>
 
             <div className="flex flex-col">
-              <Label htmlFor="temporalBounds">Temporal Bounds</Label>
-              <Input 
-                id="temporalBounds" 
-                placeholder="e.g. Last 30 Days, Q3 Term"
+              <Label htmlFor="temporalBounds">Temporal Bounds (Days)</Label>
+              <Input
+                id="temporalBounds"
+                type="number"
+                placeholder="e.g. 30"
                 {...register('temporalBounds')}
               />
               {errors.temporalBounds && (
@@ -109,16 +110,16 @@ const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
 
           {/* Actions Buttons */}
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-50 mt-6">
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={onClose}
               className="h-10 px-5 text-xs font-bold cursor-pointer"
             >
               Cancel
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={isSubmitting}
               className="h-10 px-5 text-xs font-bold bg-main hover:bg-main-dark cursor-pointer text-white shadow-md shadow-orange-500/10"
             >

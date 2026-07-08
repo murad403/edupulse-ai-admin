@@ -17,3 +17,10 @@ export const teacherSchema = z.object({
   status: z.enum(['approved', 'pending'])
 })
 export type TTeacherForm = z.infer<typeof teacherSchema>
+
+export const reportSchema = z.object({
+  analyticalFocus: z.string().min(1, { message: 'Analytical Focus is required.' }),
+  targetSchoolRange: z.coerce.number({ error: 'Target School Range must be a number.' }).int().min(1, { message: 'Must be at least 1.' }),
+  temporalBounds: z.coerce.number({ error: 'Temporal Bounds must be a number.' }).int().min(1, { message: 'Must be at least 1.' })
+})
+export type TReportForm = z.infer<typeof reportSchema>

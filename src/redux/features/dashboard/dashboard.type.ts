@@ -145,3 +145,23 @@ export interface AddTeacherResponse {
   timestamp: string;
 }
 
+export interface GenerateReportInput {
+  analyticalFocus: string;
+  targetSchoolRange: number;
+  temporalBounds: number;
+}
+
+export interface GenerateReportData {
+  report_id?: number;
+  [key: string]: any;
+}
+
+export interface GenerateReportResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: GenerateReportData;
+  timestamp: string;
+}
+
+
