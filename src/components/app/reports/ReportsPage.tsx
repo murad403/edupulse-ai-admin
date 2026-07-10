@@ -1,51 +1,90 @@
 'use client'
 
-import React from 'react'
-import { FileBarChart, Download } from 'lucide-react'
-
-interface ReportItem {
-  id: string
-  name: string
-  size: string
-  date: string
-  category: string
-}
-
-const mockReports: ReportItem[] = [
-  {
-    id: 'rep-1',
-    name: 'Silicon District Q2 Engagement Statistics.pdf',
-    size: '4.8 MB',
-    date: 'Just now',
-    category: 'COGNITIVE USAGE'
-  },
-  {
-    id: 'rep-2',
-    name: 'Midwest High Schools Standards Mapping G.pdf',
-    size: '12.4 MB',
-    date: '2 days ago',
-    category: 'CORE STANDARDS'
-  },
-  {
-    id: 'rep-3',
-    name: 'AI Prompt Optimization & Cost Audit June.pdf',
-    size: '2.1 MB',
-    date: '7 days ago',
-    category: 'FINANCIAL / API TECH'
-  },
-  {
-    id: 'rep-4',
-    name: 'Crescent Valley Onboarding Feedback Analysis.pdf',
-    size: '6.2 MB',
-    date: '14 days ago',
-    category: 'FEEDBACK INSIGHTS'
-  }
-]
+import React, { useState } from 'react'
+import { FileBarChart, Download, Eye } from 'lucide-react'
+import { useGetAnalysisReportsQuery } from '@/redux/features/dashboard/dashboard.api'
+import { Skeleton } from '@/components/ui/skeleton'
+import { toast } from 'sonner'
+import ReportDetailsModal from '@/components/modal/ReportDetailsModal'
+import { getCurrentUser } from '@/lib/auth'
 
 const ReportsPage = () => {
-  const handleDownload = (name: string) => {
-    alert(`Starting secure download for: ${name}`)
+  const { data, isLoading } = useGetAnalysisReportsQuery()
+  const [selectedReportId, setSelectedReportId] = useState<number | null>(null)
+  const [isDetailsOpen, setIsDetailsOpen] = useState(false)
+
+  const handleDownload = async (reportId: number, schoolName: string) => {
+    const toastId = toast.loading('Generating PDF download...')
+    try {
+      const { access } = await getCurrentUser()
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/admin/analysis-report/${reportId}/download-pdf`, {
+        method: 'GET',
+        headers: {
+          'Authorization': `Bearer ${access}`
+        }
+      })
+      if (!response.ok) throw new Error('Failed to download PDF')
+      const blob = await response.blob()
+
+      const fileName = `${schoolName.replace(/\s+/g, '_')}_Report_${reportId}.pdf`
+      const url = window.URL.createObjectURL(blob)
+      const link = document.createElement('a')
+      link.href = url
+      link.setAttribute('download', fileName)
+      document.body.appendChild(link)
+      link.click()
+      link.remove()
+      window.URL.revokeObjectURL(url)
+      toast.success('Download started!', { id: toastId })
+    } catch (err) {
+      toast.error('Failed to download PDF.', { id: toastId })
+    }
   }
+
+  const handleViewDetails = (reportId: number) => {
+    setSelectedReportId(reportId)
+    setIsDetailsOpen(true)
+  }
+
+  if (isLoading) {
+    return (
+      <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
+        {/* Header Info Card Skeleton */}
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm text-left">
+          <div className="flex items-start gap-3.5">
+            <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+              <Skeleton className="h-4.5 w-4.5 rounded" />
+            </div>
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-4 w-48" />
+              <Skeleton className="h-3 w-80" />
+            </div>
+          </div>
+        </div>
+
+        {/* Grid Skeletons */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {[...Array(4)].map((_, i) => (
+            <div 
+              key={i}
+              className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm flex items-center justify-between gap-4"
+            >
+              <div className="flex items-center gap-3.5 min-w-0 flex-1">
+                <Skeleton className="h-10 w-10 rounded-lg shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <Skeleton className="h-4 w-3/4" />
+                  <Skeleton className="h-3 w-1/2" />
+                </div>
+              </div>
+              <Skeleton className="h-6 w-24 rounded" />
+            </div>
+          ))}
+        </div>
+      </div>
+    )
+  }
+
+  const reports = data?.data || []
 
   return (
     <div className="flex flex-col gap-6 w-full animate-in fade-in duration-300">
@@ -66,47 +105,72 @@ const ReportsPage = () => {
       </div>
 
       {/* Grid of Dossier Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {mockReports.map((report) => (
-          <div 
-            key={report.id}
-            className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between gap-4"
-          >
-            {/* Left Content (File Icon + Details) */}
-            <div className="flex items-center gap-3.5 min-w-0">
-              <div className="h-10 w-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0 shadow-inner">
-                <FileBarChart className="h-5 w-5 text-main" />
-              </div>
-              
-              <div className="flex flex-col text-left min-w-0">
-                <h4 className="text-xs font-bold text-title truncate leading-normal" title={report.name}>
-                  {report.name}
-                </h4>
+      {reports.length > 0 ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {reports.map((report) => (
+            <div 
+              key={report.report_id}
+              className="rounded-xl border border-gray-100 bg-white p-4 shadow-sm hover:shadow-md transition-shadow duration-200 flex items-center justify-between gap-4"
+            >
+              {/* Left Content (File Icon + Details) */}
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="h-10 w-10 rounded-lg bg-orange-50 flex items-center justify-center shrink-0 shadow-inner">
+                  <FileBarChart className="h-5 w-5 text-main" />
+                </div>
                 
-                <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[10px] font-semibold text-gray-400">
-                  <span>{report.size}</span>
-                  <span>•</span>
-                  <span>{report.date}</span>
-                  <span>•</span>
-                  <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-md text-[8px] font-extrabold tracking-wide uppercase">
-                    {report.category}
-                  </span>
+                <div className="flex flex-col text-left min-w-0">
+                  <h4 className="text-xs font-bold text-title truncate leading-normal" title={`${report.school_name} - ${report.analytical_focus}.pdf`}>
+                    {report.school_name} - {report.analytical_focus}.pdf
+                  </h4>
+                  
+                  <div className="flex flex-wrap items-center gap-2 mt-1.5 text-[10px] font-semibold text-gray-400">
+                    <span>{new Date(report.created_at).toLocaleDateString()}</span>
+                    <span>•</span>
+                    <span className="bg-emerald-50 text-emerald-600 px-2 py-0.5 rounded-md text-[8px] font-extrabold tracking-wide uppercase">
+                      {report.temporal_bounds} Days
+                    </span>
+                  </div>
                 </div>
               </div>
+
+              {/* Right Action */}
+              <div className="flex items-center gap-3.5 shrink-0">
+                <button
+                  onClick={() => handleViewDetails(report.report_id)}
+                  className="text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors flex items-center gap-1 cursor-pointer"
+                  title="View Report Details"
+                >
+                  <Eye className="h-3.5 w-3.5" />
+                  <span>View</span>
+                </button>
+                <button
+                  onClick={() => handleDownload(report.report_id, report.school_name)}
+                  className="text-xs font-bold text-main hover:text-main-dark hover:underline transition-colors flex items-center gap-1 cursor-pointer"
+                  title="Download PDF"
+                >
+                  <Download className="h-3.5 w-3.5" />
+                  <span>Download</span>
+                </button>
+              </div>
+
             </div>
+          ))}
+        </div>
+      ) : (
+        <div className="rounded-xl border border-dashed border-gray-200 bg-white p-12 text-center text-sm text-gray-400 font-semibold">
+          No reports found. Generate a report from the Overview dashboard to get started.
+        </div>
+      )}
 
-            {/* Right Action */}
-            <button
-              onClick={() => handleDownload(report.name)}
-              className="text-xs font-bold text-main hover:text-main-dark hover:underline transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
-            >
-              <Download className="h-3.5 w-3.5" />
-              <span>Download</span>
-            </button>
-
-          </div>
-        ))}
-      </div>
+      {/* Details Modal */}
+      <ReportDetailsModal 
+        reportId={selectedReportId}
+        isOpen={isDetailsOpen}
+        onClose={() => {
+          setIsDetailsOpen(false)
+          setSelectedReportId(null)
+        }}
+      />
 
     </div>
   )

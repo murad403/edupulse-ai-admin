@@ -1,5 +1,5 @@
 import baseApi from "@/redux/api/api";
-import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse, UpdateAiConfigInput, UpdateAiConfigResponse, GetTeachersResponse, TeacherDetailsResponse, TeacherItem, GetAiConfigResponse } from "./dashboard.type";
+import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse, UpdateAiConfigInput, UpdateAiConfigResponse, GetTeachersResponse, TeacherDetailsResponse, TeacherItem, GetAiConfigResponse, GetAnalysisReportsResponse, GetAnalysisReportDetailsResponse } from "./dashboard.type";
 
 
 const dashboardApi = baseApi.injectEndpoints({
@@ -157,6 +157,25 @@ const dashboardApi = baseApi.injectEndpoints({
       },
       invalidatesTags: ["Teachers", "Stats"],
     }),
+
+
+    // reports api******************************
+    getAnalysisReports: builder.query<GetAnalysisReportsResponse, void>({
+      query: () => {
+        return {
+          url: "/admin/analysis-report",
+          method: "GET"
+        };
+      }
+    }),
+    getAnalysisReportDetails: builder.query<GetAnalysisReportDetailsResponse, number>({
+      query: (report_id) => {
+        return {
+          url: `/admin/analysis-report/${report_id}/`,
+          method: "GET"
+        };
+      }
+    })
   }),
 });
 
@@ -176,5 +195,7 @@ export const {
   useUpdateUserDetailsMutation,
   useDeleteUserMutation,
   useApprovedUserMutation,
-  useGetAiConfigQuery
+  useGetAiConfigQuery,
+  useGetAnalysisReportsQuery,
+  useGetAnalysisReportDetailsQuery
 } = dashboardApi;

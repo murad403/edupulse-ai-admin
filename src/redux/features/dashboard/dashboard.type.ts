@@ -238,6 +238,32 @@ export interface GetAiConfigResponse {
   timestamp: string;
 }
 
+export interface AnalysisReportItem {
+  report_id: number;
+  school: number;
+  school_name: string;
+  analytical_focus: string;
+  temporal_bounds: number;
+  report_text: string;
+  created_at: string;
+}
+
+export interface GetAnalysisReportsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: AnalysisReportItem[];
+  timestamp: string;
+}
+
+export interface GetAnalysisReportDetailsResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: AnalysisReportItem;
+  timestamp: string;
+}
+
 
 
 
