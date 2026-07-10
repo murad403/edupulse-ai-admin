@@ -230,6 +230,14 @@ export interface TeacherDetailsResponse {
   timestamp: string;
 }
 
+export interface GetAiConfigResponse {
+  success: boolean;
+  statusCode: number;
+  message: string;
+  data: UpdateAiConfigData;
+  timestamp: string;
+}
+
 
 
 

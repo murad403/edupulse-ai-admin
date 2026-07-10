@@ -1,18 +1,26 @@
 'use client'
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Sliders } from 'lucide-react'
-import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
-import { useUpdateAiConfigMutation } from '@/redux/features/dashboard/dashboard.api'
+import { useGetAiConfigQuery, useUpdateAiConfigMutation } from '@/redux/features/dashboard/dashboard.api'
 import { toast } from 'sonner'
+import { Skeleton } from '@/components/ui/skeleton'
 
 const AiConfigurationPage = () => {
-  const [updateAiConfig, { isLoading: isUpdating }] = useUpdateAiConfigMutation()
+  const [updateAiConfig, { isLoading: isUpdating }] = useUpdateAiConfigMutation();
+  const { data, isLoading, refetch } = useGetAiConfigQuery(undefined);
 
   const [temperature, setTemperature] = useState(0.8)
   const [maxTokens, setMaxTokens] = useState(1500)
-  const selectedModel = 'gpt-4o-mini'
+  const [selectedModel, setSelectedModel] = useState('gpt-4o-mini')
+
+  useEffect(() => {
+    if (data?.data) {
+      setTemperature(data.data.temperature)
+      setMaxTokens(data.data.max_tokens)
+      setSelectedModel(data.data.ai_model)
+    }
+  }, [data])
 
   const handleUpdate = async () => {
     const toastId = toast.loading('Updating AI Configuration...')
@@ -23,11 +31,51 @@ const AiConfigurationPage = () => {
         max_tokens: maxTokens
       }).unwrap()
       toast.success(response.message || 'AI Configuration updated.', { id: toastId })
+      refetch()
     } catch (err: any) {
       // console.error(err)
       const errMsg = err?.data?.message || 'Failed to update AI Configuration.'
       toast.error(errMsg, { id: toastId })
     }
+  }
+
+  if (isLoading) {
+    return (
+      <div className="w-full max-w-2xl mx-auto space-y-6 animate-in fade-in duration-300">
+        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm space-y-6 text-left">
+          <div className="flex items-start gap-3.5 border-b border-gray-50 pb-4">
+            <div className="h-9 w-9 rounded-lg bg-orange-50 flex items-center justify-center shrink-0">
+              <Skeleton className="h-4 w-4 rounded" />
+            </div>
+            <div className="space-y-2 flex-1">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-3 w-3/4" />
+            </div>
+          </div>
+
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-36" />
+              <Skeleton className="h-5 w-12 rounded-md" />
+            </div>
+            <Skeleton className="h-3 w-5/6" />
+            <Skeleton className="h-2 w-full rounded-lg" />
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-40" />
+              <Skeleton className="h-5 w-16 rounded-md" />
+            </div>
+            <Skeleton className="h-2 w-full rounded-lg" />
+          </div>
+
+          <div className="flex justify-end pt-4 border-t border-gray-50 mt-6">
+            <Skeleton className="h-10 w-36 rounded-xl" />
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (

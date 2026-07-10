@@ -1,5 +1,5 @@
 import baseApi from "@/redux/api/api";
-import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse, UpdateAiConfigInput, UpdateAiConfigResponse, GetTeachersResponse, TeacherDetailsResponse, TeacherItem } from "./dashboard.type";
+import { DashboardStatsResponse, PlatformUsageResponse, TeacherActivityResponse, TopSchoolsResponse, AddSchoolInput, AddSchoolResponse, GetSchoolsResponse, AddTeacherInput, AddTeacherResponse, GenerateReportInput, GenerateReportResponse, SchoolDetailsResponse, UpdateAiConfigInput, UpdateAiConfigResponse, GetTeachersResponse, TeacherDetailsResponse, TeacherItem, GetAiConfigResponse } from "./dashboard.type";
 
 
 const dashboardApi = baseApi.injectEndpoints({
@@ -100,6 +100,14 @@ const dashboardApi = baseApi.injectEndpoints({
         };
       }
     }),
+    getAiConfig: builder.query<GetAiConfigResponse, void>({
+      query: () => {
+        return {
+          url: "/admin/ai-config",
+          method: "GET"
+        };
+      }
+    }),
 
 
     // user management********************************************************************
@@ -168,4 +176,5 @@ export const {
   useUpdateUserDetailsMutation,
   useDeleteUserMutation,
   useApprovedUserMutation,
+  useGetAiConfigQuery
 } = dashboardApi;
