@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { reportSchema, TReportForm } from '@/validation/all.validation'
-import { useGenerateReportMutation } from '@/redux/features/dashboard/dashboard.api'
+import { useGenerateReportMutation, useGetSchoolsQuery } from '@/redux/features/dashboard/dashboard.api'
 import { toast } from 'sonner'
 
 interface GenerateReportModalProps {
@@ -16,12 +16,13 @@ interface GenerateReportModalProps {
 
 const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
   const [generateReport] = useGenerateReportMutation()
+  const { data: schoolsData, isLoading: isLoadingSchools } = useGetSchoolsQuery()
 
   const { register, handleSubmit, reset, formState: { errors, isSubmitting }} = useForm<TReportForm>({
     resolver: zodResolver(reportSchema) as any,
     defaultValues: {
       analyticalFocus: '',
-      targetSchoolRange: 0,
+      targetSchoolRange: '' as any,
       temporalBounds: 0
     }
   })
@@ -83,12 +84,21 @@ const GenerateReportModal = ({ isOpen, onClose }: GenerateReportModalProps) => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="flex flex-col">
               <Label htmlFor="targetSchoolRange">Target School Range</Label>
-              <Input
+              <select
                 id="targetSchoolRange"
-                type="number"
-                placeholder="e.g. 1"
+                className="block h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-title focus:outline-none focus:ring-2 focus:ring-main/25 focus:border-main disabled:cursor-not-allowed disabled:opacity-50"
+                disabled={isLoadingSchools}
                 {...register('targetSchoolRange')}
-              />
+              >
+                <option value="">
+                  {isLoadingSchools ? 'Loading schools list...' : 'Select a school...'}
+                </option>
+                {schoolsData?.data?.results?.map((school) => (
+                  <option key={school.school_id} value={school.school_id}>
+                    {school.school_name}
+                  </option>
+                ))}
+              </select>
               {errors.targetSchoolRange && (
                 <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.targetSchoolRange.message}</span>
               )}
