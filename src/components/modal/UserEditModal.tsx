@@ -7,7 +7,7 @@ import { X, Camera, Upload } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useUpdateUserDetailsMutation } from '@/redux/features/dashboard/dashboard.api'
+import { useUpdateUserDetailsMutation, useGetSchoolsQuery } from '@/redux/features/dashboard/dashboard.api'
 import { editUserSchema, TEditUserForm } from '@/validation/all.validation'
 import { TeacherItem } from '@/redux/features/dashboard/dashboard.type'
 import { toast } from 'sonner'
@@ -20,6 +20,7 @@ interface UserEditModalProps {
 
 const UserEditModal = ({ user, isOpen, onClose }: UserEditModalProps) => {
   const [updateUserDetails, { isLoading: isUpdating }] = useUpdateUserDetailsMutation()
+  const { data: schoolsData, isLoading: isLoadingSchools } = useGetSchoolsQuery()
 
   const [avatarPreview, setAvatarPreview] = useState('')
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
@@ -39,18 +40,23 @@ const UserEditModal = ({ user, isOpen, onClose }: UserEditModalProps) => {
 
   useEffect(() => {
     if (user) {
+      const matchedSchool = schoolsData?.data?.results?.find(
+        (s) => s.school_name === user.school_name
+      )
+      const initialSchoolId = matchedSchool ? String(matchedSchool.school_id) : ''
+
       reset({
         firstName: user.first_name || '',
         lastName: user.last_name || '',
         email: user.email || '',
-        schoolName: user.school_name || '',
+        schoolName: initialSchoolId,
         grade: user.grade || '',
         room: user.room || ''
       })
       setAvatarPreview(user.profile_picture || '')
       setSelectedFile(null)
     }
-  }, [user, reset])
+  }, [user, reset, schoolsData])
 
   if (!isOpen || !user) return null
 
@@ -77,7 +83,7 @@ const UserEditModal = ({ user, isOpen, onClose }: UserEditModalProps) => {
       formData.append('first_name', data.firstName)
       formData.append('last_name', data.lastName)
       formData.append('email', user.email) // email cannot be edited, but sent in payload
-      formData.append('school_name', user.school_name || '') // preserve existing school_name
+      formData.append('school_id', data.schoolName || '') // update school by ID
       formData.append('grade', data.grade)
       formData.append('room', data.room || '')
 
@@ -199,6 +205,29 @@ const UserEditModal = ({ user, isOpen, onClose }: UserEditModalProps) => {
               className="text-xs text-gray-400 bg-gray-100 font-semibold cursor-not-allowed border-gray-200"
               {...register('email')}
             />
+          </div>
+
+          {/* School Name Dropdown */}
+          <div className="flex flex-col">
+            <Label htmlFor="schoolName">School Name</Label>
+            <select
+              id="schoolName"
+              className="block h-10 w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-title focus:outline-none focus:ring-2 focus:ring-main/25 focus:border-main disabled:cursor-not-allowed disabled:opacity-50"
+              disabled={isLoadingSchools}
+              {...register('schoolName')}
+            >
+              <option value="">
+                {isLoadingSchools ? 'Loading schools list...' : 'Select a school...'}
+              </option>
+              {schoolsData?.data?.results?.map((school) => (
+                <option key={school.school_id} value={school.school_id}>
+                  {school.school_name}
+                </option>
+              ))}
+            </select>
+            {errors.schoolName && (
+              <span className="text-[11px] text-red-500 mt-1 font-bold">{errors.schoolName.message}</span>
+            )}
           </div>
 
           {/* Grade & Room Grid */}
