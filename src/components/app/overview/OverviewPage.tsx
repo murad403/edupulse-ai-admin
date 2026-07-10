@@ -1,12 +1,10 @@
 'use client'
-
-import React, { useState } from 'react'
+import { useState } from 'react'
 import OverviewStats from './OverviewStats'
 import PlatformUsageChart from './PlatformUsageChart'
 import RecentTeacherActivity from './RecentTeacherActivity'
 import QuickActions from './QuickActions'
 import TopActiveSchools from './TopActiveSchools'
-import RecentAuditLog from './RecentAuditLog'
 import AddTeacherModal from '@/components/modal/AddTeacherModal'
 import AddSchoolModal from '@/components/modal/AddSchoolModal'
 import GenerateReportModal from '@/components/modal/GenerateReportModal'
@@ -43,9 +41,6 @@ const OverviewPage = () => {
         </div>
         <div>
           <TopActiveSchools />
-        </div>
-        <div className="md:col-span-2 xl:col-span-1">
-          <RecentAuditLog />
         </div>
       </div>
 

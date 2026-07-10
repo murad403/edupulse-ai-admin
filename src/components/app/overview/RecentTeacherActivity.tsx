@@ -3,6 +3,7 @@ import { cn } from '@/lib/utils'
 
 import { useGetTeachersActivityQuery } from '@/redux/features/dashboard/dashboard.api'
 import { Skeleton } from '@/components/ui/skeleton'
+import Link from 'next/link'
 
 const RecentTeacherActivity = () => {
   const { data, isLoading } = useGetTeachersActivityQuery()
@@ -38,7 +39,7 @@ const RecentTeacherActivity = () => {
       
       {/* Table Area */}
       <div className="flex-1 overflow-x-auto">
-        <table className="w-full min-w-[500px] text-left border-collapse">
+        <table className="w-full text-left border-collapse">
           <thead>
             <tr className="border-b border-gray-50 text-[10px] font-extrabold text-gray-400 uppercase tracking-wider">
               <th className="pb-3 font-extrabold">Name</th>
@@ -88,9 +89,9 @@ const RecentTeacherActivity = () => {
       </div>
 
       {/* Footer Button */}
-      <button className="w-full rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold py-2.5 transition-colors cursor-pointer text-center mt-4">
+      <Link href={"/user-management"} className="w-full rounded-lg bg-slate-50 hover:bg-slate-100 text-slate-700 text-xs font-bold py-2.5 transition-colors cursor-pointer text-center mt-4">
         Manage Teachers directory
-      </button>
+      </Link>
     </div>
   )
 }
